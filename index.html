@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>周游 · 旅行地图</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23fbfaf4'/%3E%3Ccircle cx='16' cy='13' r='5.5' fill='none' stroke='%23b84232' stroke-width='2.4'/%3E%3Cpath d='M16 18.5 16 27' stroke='%23b84232' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='13' r='1.8' fill='%23b84232'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" integrity="sha384-MinO0mNliZ3vwppuPOUnGa+iq619pfMhLVUXfC4LHwSCvF9H+6P/KO4Q7qBOYV5V" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" integrity="sha384-SYKAG6cglRMN0RVvhNeBY0r3FYKNOJtznwA0v7B5Vp9tr31xAHsZC0DqkQ/pZDmj" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+  <main class="atlas-shell">
+
+    <div class="atlas-stage">
+      <section id="mapStage" class="map-stage" data-pane="map" aria-label="个人旅行地图">
+        <div class="map-surface">
+          <div id="map" class="map-gl" aria-label="个人旅行地图（可拖动缩放）"></div>
+          <div class="map-fade map-fade-top" aria-hidden="true"></div>
+          <div class="map-fade map-fade-bottom" aria-hidden="true"></div>
+          <!-- 左上：报头 -->
+          <div class="stage-title">
+            <p class="eyebrow">JOURNEY ATLAS</p>
+            <h1>周游<br>旅行地图</h1>
+            <p id="dataStatus" class="source-line">正在读取旅行资料</p>
+          </div>
+
+          <!-- 右上：行动 + 视图切换 -->
+          <div class="stage-actions" aria-label="数据操作">
+            <div class="acts">
+              <button id="playBtn" class="act-play" type="button">播放旅程</button>
+              <button id="playResetBtn" class="act-icon" type="button" title="重新播放" aria-label="重新播放" hidden><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z" fill="currentColor"/></svg></button>
+              <button id="playStopBtn" class="act-icon" type="button" title="停止并显示全部行程" aria-label="停止并显示全部行程" hidden><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor"/></svg></button>
+              <button id="eraBtn" class="act-link" type="button" title="按年份看旅程如何逐年生长">岁月</button>
+              <button id="posterMapBtn" class="act-link" type="button">行旅海报</button>
+              <button id="posterBtnTop" class="act-link" type="button">街道海报 ↗</button>
+              <button id="immersiveBtn" class="act-icon act-fs" type="button" title="全屏沉浸" aria-label="全屏沉浸"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5 M20 9V4h-5 M4 15v5h5 M20 15v5h-5"/></svg></button>
+              <details class="more-menu">
+                <summary aria-label="更多操作">···</summary>
+                <div class="more-pop">
+                 <div class="more-scroll">
+                  <div class="more-group">
+                    <span class="more-label">显示与播放</span>
+                    <div class="more-checks"><label class="mp-chk"><input type="checkbox" id="titleVisChk" checked><span>标题报头</span></label></div>
+                    <button type="button" id="titleEditBtn" class="more-accent">自定义标题…</button>
+                  </div>
+                  <div class="more-group">
+                    <div class="more-row"><span>配色（共 23 套）</span><div id="mapSkinSwatch"></div></div>
+                  </div>
+                  <div class="more-group">
+                    <label class="more-row">播放速度
+                      <select id="playSpeedSelect">
+                        <option value="slow">慢（细看回忆）</option>
+                        <option value="normal" selected>中</option>
+                        <option value="fast">快（快速浏览）</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="more-group">
+                    <span class="more-label">看板指标</span>
+                    <div class="more-checks">
+                      <label class="mp-chk"><input type="checkbox" data-metric="days"><span>在路天数</span></label>
+                      <label class="mp-chk"><input type="checkbox" data-metric="cost"><span>可见花销</span></label>
+                      <label class="mp-chk"><input type="checkbox" data-metric="hours"><span>移动小时</span></label>
+                      <label class="mp-chk"><input type="checkbox" data-metric="cities"><span>点亮城市</span></label>
+                      <label class="mp-chk"><input type="checkbox" data-metric="missing"><span>待补字段</span></label>
+                    </div>
+                  </div>
+                  <div class="more-group">
+                    <span class="more-label">数据</span>
+                    <button id="importBtn" type="button">导入</button>
+                    <button id="exportJsonBtn" type="button">导出 JSON</button>
+                    <button id="exportCsvBtn" type="button">导出 CSV</button>
+                    <button id="resetBtn" type="button">重载资料</button>
+                  </div>
+                  <div class="more-group">
+                    <button id="helpBtn" type="button" class="more-help"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.4 1c0 1.9-2.6 2.3-2.6 3.8"/><circle cx="12" cy="17.2" r="0.6" fill="currentColor" stroke="none"/></svg>使用说明 · 怎么看这张图</button>
+                  </div>
+                 </div>
+                </div>
+              </details>
+              <input id="fileInput" class="file-input" type="file" accept=".json,.csv,application/json,text/csv">
+            </div>
+            <span class="view-toggle" role="group" aria-label="地图视图切换">
+              <button type="button" data-view="china" class="active">中国</button>
+              <button type="button" data-view="world">世界</button>
+            </span>
+          </div>
+
+          <!-- 顶部居中：播放时显示当前段的日期/交通/时间（仅播放中可见） -->
+          <div id="playCaption" class="play-caption" aria-live="polite" hidden></div>
+
+          <!-- 底部居中：海报式落款（当前聚焦城市 · 坐标 · 国家） -->
+          <div class="poster-caption" aria-live="polite">
+            <strong id="posterCity">中国行旅</strong>
+            <span id="posterCoord">—</span>
+            <span id="posterCountry">CHINA</span>
+          </div>
+
+          <!-- 左下：指标细线 -->
+          <div class="stage-metrics metric-ribbon" aria-label="旅行汇总">
+            <div class="metric" data-metric="days"><span>在路天数</span><strong id="metricDays">0</strong><em id="metricDaysSub"></em></div>
+            <div class="metric" data-metric="cost"><span>可见花销</span><strong id="metricCost">¥0</strong><em id="metricCostSub"></em></div>
+            <div class="metric" data-metric="hours"><span>移动小时</span><strong id="metricHours">0</strong><em id="metricHoursSub"></em></div>
+            <div class="metric" data-metric="cities"><span>点亮城市</span><strong id="metricCities">0</strong><em id="metricCitiesSub"></em></div>
+            <div class="metric" data-metric="missing"><span>待补字段</span><strong id="metricMissing">0</strong><em id="metricMissingSub"></em></div>
+          </div>
+
+          <!-- 右下：图例 -->
+          <div class="stage-legend legend-row" aria-label="图例">
+            <span class="legend flight">航线</span>
+            <span class="legend rail">铁路</span>
+            <span class="legend stay">停留</span>
+            <span class="legend road">地面/水路</span>
+            <span class="legend soft">费用层</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="atlas-stats" data-pane="stats" aria-label="旅行档案统计" hidden>
+        <div class="section-head">
+          <div>
+            <p class="panel-kicker">旅行档案</p>
+            <h2>全球足迹统计</h2>
+          </div>
+          <span id="statsScope">全部年份</span>
+        </div>
+        <div class="stats-hero">
+          <div class="stat-big"><span>总里程</span><strong id="statKm">0</strong><em id="statKmSub">公里</em></div>
+          <div class="stat-big"><span>出行次数</span><strong id="statTrips">0</strong><em id="statTripsSub">飞机 / 火车 / 地面</em></div>
+          <div class="stat-big"><span>到访城市</span><strong id="statCities">0</strong><em id="statCitiesSub"></em></div>
+          <div class="stat-big"><span>国家 / 地区</span><strong id="statCountries">0</strong><em id="statCountriesSub"></em></div>
+          <div class="stat-big"><span>大洲</span><strong id="statContinents">0</strong><em id="statContinentsSub"></em></div>
+        </div>
+        <div class="stats-cols">
+          <div class="stats-rank">
+            <h3>城市足迹 · 待得最久（晚 · 到访次）</h3>
+            <ol id="cityRank" class="rank-list"></ol>
+          </div>
+          <div class="stats-rank">
+            <h3>高频路线</h3>
+            <ol id="routeRank" class="rank-list"></ol>
+          </div>
+          <div class="stats-rank">
+            <h3>国家 / 地区足迹</h3>
+            <ul id="countryList" class="rank-list"></ul>
+          </div>
+        </div>
+        <div class="stats-cols stats-cols-2">
+          <div class="stats-rank">
+            <h3>年度足迹 · 逐年出行</h3>
+            <ul id="yearRank" class="rank-list"></ul>
+          </div>
+          <div class="stats-rank">
+            <h3>出行方式 · 交通构成</h3>
+            <ul id="kindRank" class="rank-list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="editor" data-pane="ocr" aria-label="补录 / OCR 识别" hidden>
+        <div class="section-head">
+          <div>
+            <p class="panel-kicker">补录</p>
+            <h2>新增一段行旅</h2>
+          </div>
+          <span>先本机保存，可导出</span>
+        </div>
+        <section class="ai-intake" aria-label="票据识别与AI导入">
+          <div class="intake-title">
+            <div>
+              <p class="panel-kicker">票据入口</p>
+              <h3>OCR / AI 识别</h3>
+            </div>
+            <span id="intakeStatus">等待票据</span>
+          </div>
+          <div class="intake-grid">
+            <label class="ticket-drop">票据文件
+              <input id="ticketFileInput" type="file" accept="image/*,.pdf" multiple>
+              <span id="ticketFileName">选择图片或 PDF</span>
+            </label>
+            <label class="intake-text">OCR文字或AI JSON
+              <textarea id="ocrText" placeholder="粘贴车票文字，或粘贴 AI 输出的 records JSON"></textarea>
+            </label>
+            <div class="intake-actions">
+              <button id="parseOcrBtn" type="button">试填表单</button>
+              <button id="importAiBtn" type="button">导入 AI JSON</button>
+              <button id="copyPromptBtn" type="button">复制识别提示</button>
+            </div>
+            <pre id="intakePreview" class="intake-preview" aria-live="polite">未识别</pre>
+          </div>
+        </section>
+        <form id="recordForm" class="form-grid">
+          <fieldset class="form-block wide">
+            <legend>路线</legend>
+            <label>开始日期<input name="startDate" type="date" required></label>
+            <label>结束日期<input name="endDate" type="date"></label>
+            <label>类型
+              <select name="kind">
+                <option value="flight">航班</option>
+                <option value="rail">铁路</option>
+                <option value="stay">停留</option>
+                <option value="road">地面/水路</option>
+                <option value="other">门票/其他</option>
+                <option value="cancelled">退改</option>
+              </select>
+            </label>
+            <label>出发地<input name="origin" list="cityList" required placeholder="北京"></label>
+            <label>到达地<input name="destination" list="cityList" required placeholder="上海"></label>
+            <label class="span-2">标题<input name="title" placeholder="不填则自动生成：北京 → 上海"></label>
+          </fieldset>
+
+          <fieldset class="form-block wide">
+            <legend>票据</legend>
+            <label>车次 / 航班<input name="transportNo" placeholder="CA115 / G6006"></label>
+            <label>出发时间<input name="departTime" placeholder="15:20"></label>
+            <label>到达时间<input name="arriveTime" placeholder="19:00"></label>
+            <label>时长分钟<input name="durationMinutes" type="number" min="0" step="1" placeholder="220"></label>
+            <label>金额<input name="amountCny" type="number" min="0" step="0.01" placeholder="1092"></label>
+            <label>证据状态
+              <select name="confidence">
+                <option value="confirmed">已确认</option>
+                <option value="partial">部分确认</option>
+                <option value="inferred">推定</option>
+                <option value="pending">待补证据</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset class="form-block wide">
+            <legend>归属</legend>
+            <label>旅客<input name="traveler" value="周游"></label>
+            <label class="span-2">项目<input name="project" placeholder="项目 / 目的（可选）"></label>
+            <label class="span-3">备注<textarea name="notes" placeholder="证据来源、费用口径、待补事项"></textarea></label>
+          </fieldset>
+
+          <div class="form-actions wide">
+            <span class="save-note">加入后会进入本机版本；确认无误后可导出 JSON。</span>
+            <button type="reset">清空</button>
+            <button class="primary" type="submit">加入地图</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <nav class="deck" aria-label="导航与筛选">
+      <div class="view-nav" aria-label="视图导航">
+        <button type="button" data-nav="map" class="active">地图 · 时间线</button>
+        <button type="button" data-nav="stats">旅行档案 · 明细</button>
+        <button type="button" data-nav="ocr">录入 / OCR</button>
+        <button type="button" id="showModeBtn" title="展示模式：隐去待补/置信度/录入等工作痕迹，适合给别人看">展示</button>
+      </div>
+      <div class="deck-filters" aria-label="筛选">
+        <label>年份<select id="yearFilter"></select></label>
+        <label>旅客<select id="travelerFilter"></select></label>
+        <label>类型<select id="kindFilter"></select></label>
+        <label>置信度<select id="confidenceFilter"></select></label>
+        <div class="search-field">
+          <label class="search-label">搜索<input id="searchInput" type="search" placeholder="车次 / 航班 / 城市 / 项目" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="searchSuggest"></label>
+          <ul id="searchSuggest" class="search-suggest" role="listbox" hidden></ul>
+        </div>
+      </div>
+    </nav>
+
+    <section class="timeline-studio" data-pane="map" aria-label="时间线">
+      <div class="studio-grid">
+        <div class="studio-main">
+          <div class="section-head">
+            <div>
+              <p class="panel-kicker">时间线</p>
+              <h2>从旧到新的旅程生长</h2>
+            </div>
+            <span id="recordCount">0 段</span>
+          </div>
+          <div id="timeline" class="timeline"></div>
+        </div>
+        <aside class="detail-panel" aria-label="当前行程">
+          <p class="panel-kicker">当前一段</p>
+          <h2 id="detailTitle">等待第一条路线</h2>
+          <p id="detailText"></p>
+          <div class="detail-grid">
+            <div><span>日期</span><strong id="detailDate">-</strong></div>
+            <div><span>时长</span><strong id="detailDuration">-</strong></div>
+            <div><span>金额</span><strong id="detailCost">-</strong></div>
+            <div><span>证据</span><strong id="detailConfidence">-</strong></div>
+          </div>
+          <button id="posterBtn" class="poster-link" type="button" hidden>城市街道海报 ↗</button>
+        </aside>
+      </div>
+    </section>
+
+    <section class="ledger" data-pane="stats" aria-label="资料明细" hidden>
+      <div class="section-head">
+        <div>
+          <p class="panel-kicker">资料底稿</p>
+          <h2>资料明细</h2>
+        </div>
+        <div class="ledger-tools">
+          <div class="search-field ledger-search-field">
+            <svg class="ls-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+            <input id="ledgerSearchInput" type="search" placeholder="搜车次 / 航班 / 城市 / 项目" aria-label="在资料明细中搜索行程" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ledgerSearchSuggest">
+            <ul id="ledgerSearchSuggest" class="search-suggest" role="listbox" hidden></ul>
+          </div>
+          <span id="ledgerCount">0 条</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>路线 / 停留</th>
+              <th>类型</th>
+              <th>旅客</th>
+              <th>项目</th>
+              <th class="money">金额</th>
+              <th>状态</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="posterModal" class="poster-modal" role="dialog" aria-modal="true" aria-label="城市街道海报" hidden>
+    <div class="pm-inner">
+      <header class="pm-head">
+        <div>
+          <p class="eyebrow">城市街道海报</p>
+          <h2 id="pmTitle">—</h2>
+        </div>
+        <button id="pmClose" class="pm-close" type="button" aria-label="关闭">×</button>
+      </header>
+      <div class="pm-body">
+        <div class="pm-stage">
+          <canvas id="posterCanvas" width="1200" height="1680"></canvas>
+          <div id="pmStatus" class="pm-status" aria-live="polite"></div>
+        </div>
+        <aside class="pm-controls">
+          <label class="pm-field">海报标题<input id="pmTitleInput" type="text" placeholder="默认城市名"></label>
+          <label class="pm-field">主题（共 20 套）<select id="pmTheme"></select></label>
+          <label class="pm-field">尺寸<select id="pmSize"></select></label>
+          <label class="pm-field">采集半径 <em id="pmRadiusVal">5.0 km</em>
+            <input id="pmRadius" type="range" min="2000" max="14000" step="500" value="6000">
+          </label>
+          <label class="pm-field">兴趣点
+            <select id="pmPoi">
+              <option value="none">不显示</option>
+              <option value="sparse">稀疏</option>
+              <option value="medium">适中</option>
+            </select>
+          </label>
+          <details class="pm-colors">
+            <summary>自定义配色（12 类）</summary>
+            <div id="pmColorGrid" class="pm-color-grid"></div>
+          </details>
+          <label class="pm-field">自定义字体（标题用 TTF/OTF）<input id="pmFont" type="file" accept=".ttf,.otf,font/ttf,font/otf"></label>
+          <div class="pm-actions">
+            <button id="pmGenerate" class="primary" type="button">生成</button>
+            <button id="pmDownload" type="button">下载 PNG</button>
+          </div>
+          <p class="pm-note">街道数据来自 OpenStreetMap · Overpass，需要联网；半径越大越慢。主题/配色/尺寸/标题改完即时重绘，改半径或兴趣点需重新「生成」。</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <datalist id="cityList"></datalist>
+  <script src="./data/travel-log-data.js"></script>
+  <script src="./data/china-map-data.js"></script>
+  <script src="./data/world-map-data.js"></script>
+  <script src="./data/water-china-data.js"></script>
+  <script src="./data/poster-themes-data.js"></script>
+  <script src="./data/rail-paths-data.js"></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>

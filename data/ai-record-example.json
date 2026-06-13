@@ -1,0 +1,22 @@
+{
+  "records": [
+    {
+      "startDate": "2025-11-07",
+      "endDate": "2025-11-07",
+      "kind": "flight",
+      "title": "北京 → 桂林",
+      "origin": "北京",
+      "destination": "桂林",
+      "transportNo": "CZ3263",
+      "departTime": "10:20",
+      "arriveTime": "13:40",
+      "durationMinutes": 200,
+      "amountCny": 1260,
+      "traveler": "周游",
+      "people": ["周游"],
+      "confidence": "confirmed",
+      "evidence": "电子客票",
+      "notes": ""
+    }
+  ]
+}
