@@ -6,9 +6,9 @@
 
 ### ▶ [Live demo / 在线演示 →](https://novakepler513.github.io/journey-atlas/)
 
-The demo is populated with a **fictional traveler "周游" and entirely made-up trips** — replace `data/travel-log.json` with your own and it becomes yours.
+The demo is populated with a **fictional traveler "Nova Kepler" and entirely made-up trips** — replace `data/travel-log.json` with your own and it becomes yours.
 
-演示里的人物「周游」和所有行程都是**虚构示例**，把 `data/travel-log.json` 换成你自己的就好。
+演示里的人物「Nova Kepler」和所有行程都是**虚构示例**，把 `data/travel-log.json` 换成你自己的就好。
 
 ---
 
@@ -40,11 +40,12 @@ Or drop the folder on any static host (GitHub Pages, Netlify, Vercel, Cloudflare
 
 ## Make it yours · 改成你自己的
 
+0. **Start from a blank map** → `···` menu → **清空全部数据 (Clear all data)** wipes the demo from your browser so you can enter your own. (To make the *deployed* site start empty for everyone, set `records: []` in `data/travel-log.json`.) Get the demo back anytime with **重载资料 (Reload)**.
 1. **Your trips** → edit `data/travel-log.json` (schema: [`docs/DATA_SCHEMA.md`](docs/DATA_SCHEMA.md)). Keep `data/travel-log-data.js` in sync (it's the same JSON wrapped as `window.TRAVEL_LOG_DATA = …;`).
 2. **Your name / title** → top of `app.js`:
    ```js
-   const SITE_TITLE = { eyebrow: "JOURNEY ATLAS", title: "周游\n旅行地图", docTitle: "周游 · 旅行地图" };
-   const OWNER_NAME = "周游";   // your name / default traveler
+   const SITE_TITLE = { eyebrow: "JOURNEY ATLAS", title: "Nova", docTitle: "Nova · Journey Atlas" };
+   const OWNER_NAME = "Nova Kepler";   // your name / default traveler
    ```
    (You can also rename the masthead live from the `···` → “自定义标题” menu — it saves to your browser.)
 3. **New cities** → add coordinates to the `CITY` map in `app.js` (plus `CITY_EN` / `CITY_META` for the poster latin name & country).

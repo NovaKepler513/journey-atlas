@@ -20,7 +20,7 @@
 退出码：0 = 无阻断问题；1 = 有 ✗ 级问题（建议修完再 commit）。
 """
 
-OWNER = "周游"   # 站点主人名，与 app.js 的 OWNER_NAME 保持一致
+OWNER = "Nova Kepler"   # 站点主人名，与 app.js 的 OWNER_NAME 保持一致
 
 import json, re, sys, datetime
 from pathlib import Path

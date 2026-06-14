@@ -9,10 +9,10 @@ Top of `app.js`:
 ```js
 const SITE_TITLE = {
   eyebrow: "JOURNEY ATLAS",   // small line above the title; "" hides it
-  title:   "周游\n旅行地图",    // \n breaks the line
-  docTitle:"周游 · 旅行地图",   // browser tab
+  title:   "Nova",            // \n breaks the line (single line here)
+  docTitle:"Nova · Journey Atlas",   // browser tab
 };
-const OWNER_NAME = "周游";      // default traveler; the "self" option in the traveler filter
+const OWNER_NAME = "Nova Kepler";  // default traveler; the "self" option in the traveler filter
 ```
 
 You can also edit the masthead **at runtime**: `···` menu → “自定义标题”. That override saves to `localStorage` and wins over `SITE_TITLE` until you hit “恢复默认”.
@@ -58,7 +58,13 @@ It reads your `travel-log.json`, finds `rail` legs, fetches tracks from the publ
 - `···` → 看板指标: toggle which numbers show under the map.
 - `展示` (nav bar): "show mode" hides pending/confidence/import affordances and blanks "待补" fields — good for sharing or screenshots.
 
-## 6. Deploy
+## 6. Clear the demo / start fresh
+
+- `···` → **清空全部数据 (Clear all data)**: wipes every record from your browser so you can start entering your own. It persists (a reload stays empty).
+- **重载资料 (Reload)**: brings the bundled demo back.
+- To make the **deployed** site start empty for every visitor (not just your browser), set `"records": []` in `data/travel-log.json` (and the matching `data/travel-log-data.js`).
+
+## 7. Deploy
 
 Any static host. For GitHub Pages: push to a repo, then Settings → Pages → deploy from branch (root). Done.
 

@@ -1,4 +1,4 @@
 startDate,endDate,kind,title,origin,destination,transportNo,departTime,arriveTime,durationMinutes,amountCny,traveler,people,confidence,evidence,notes
-2025-11-07,2025-11-07,flight,北京 → 桂林,北京,桂林,CZ3263,10:20,13:40,200,1260,周游,周游,confirmed,电子客票,
-2025-11-07,2025-11-10,stay,桂林停留,桂林,桂林,,,,,980,周游,周游,confirmed,在线预订,
-2025-11-08,2025-11-08,other,桂林·漓江,桂林,桂林,,,,,210,周游,周游,confirmed,门票预订,
+2025-11-07,2025-11-07,flight,北京 → 桂林,北京,桂林,CZ3263,10:20,13:40,200,1260,Nova Kepler,Nova Kepler,confirmed,电子客票,
+2025-11-07,2025-11-10,stay,桂林停留,桂林,桂林,,,,,980,Nova Kepler,Nova Kepler,confirmed,在线预订,
+2025-11-08,2025-11-08,other,桂林·漓江,桂林,桂林,,,,,210,Nova Kepler,Nova Kepler,confirmed,门票预订,

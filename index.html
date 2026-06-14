@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>周游 · 旅行地图</title>
+  <title>Nova · Journey Atlas</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23fbfaf4'/%3E%3Ccircle cx='16' cy='13' r='5.5' fill='none' stroke='%23b84232' stroke-width='2.4'/%3E%3Cpath d='M16 18.5 16 27' stroke='%23b84232' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='13' r='1.8' fill='%23b84232'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" integrity="sha384-MinO0mNliZ3vwppuPOUnGa+iq619pfMhLVUXfC4LHwSCvF9H+6P/KO4Q7qBOYV5V" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" integrity="sha384-SYKAG6cglRMN0RVvhNeBY0r3FYKNOJtznwA0v7B5Vp9tr31xAHsZC0DqkQ/pZDmj" crossorigin="anonymous"></script>
@@ -21,7 +21,7 @@
           <!-- 左上：报头 -->
           <div class="stage-title">
             <p class="eyebrow">JOURNEY ATLAS</p>
-            <h1>周游<br>旅行地图</h1>
+            <h1>Nova</h1>
             <p id="dataStatus" class="source-line">正在读取旅行资料</p>
           </div>
 
@@ -72,6 +72,7 @@
                     <button id="exportJsonBtn" type="button">导出 JSON</button>
                     <button id="exportCsvBtn" type="button">导出 CSV</button>
                     <button id="resetBtn" type="button">重载资料</button>
+                    <button id="clearBtn" type="button" class="more-danger">清空全部数据</button>
                   </div>
                   <div class="more-group">
                     <button id="helpBtn" type="button" class="more-help"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.4 1c0 1.9-2.6 2.3-2.6 3.8"/><circle cx="12" cy="17.2" r="0.6" fill="currentColor" stroke="none"/></svg>使用说明 · 怎么看这张图</button>
@@ -229,7 +230,7 @@
 
           <fieldset class="form-block wide">
             <legend>归属</legend>
-            <label>旅客<input name="traveler" value="周游"></label>
+            <label>旅客<input name="traveler" value="Nova Kepler"></label>
             <label class="span-2">项目<input name="project" placeholder="项目 / 目的（可选）"></label>
             <label class="span-3">备注<textarea name="notes" placeholder="证据来源、费用口径、待补事项"></textarea></label>
           </fieldset>

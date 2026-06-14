@@ -5,10 +5,10 @@ Your trips live in **`data/travel-log.json`**. Keep **`data/travel-log-data.js`*
 ```jsonc
 {
   "metadata": {
-    "title": "周游 · 旅行地图",
+    "title": "Nova · Journey Atlas",
     "version": "1.0.0",
     "lastUpdated": "2025-12-01",
-    "owner": "周游",
+    "owner": "Nova Kepler",
     "notes": ["free-form notes"]
   },
   "records": [ /* one object per leg / stay / spot */ ]

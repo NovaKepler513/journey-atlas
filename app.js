@@ -6,12 +6,12 @@
  * ============================================================ */
 const SITE_TITLE = {
   eyebrow: "JOURNEY ATLAS",
-  title: "周游\n旅行地图",
-  docTitle: "周游 · 旅行地图",
+  title: "Nova",
+  docTitle: "Nova · Journey Atlas",
 };
 
-// 站点主人 / 默认旅客名 —— 开源后改成你自己的；示例为虚构人物「周游」。
-const OWNER_NAME = "周游";
+// 站点主人 / 默认旅客名 —— 开源后改成你自己的；示例为虚构人物「Nova Kepler」。
+const OWNER_NAME = "Nova Kepler";
 
 const STORAGE_KEY = "journeyatlas_records_v1";
 const DATA_URL = "./data/travel-log.json";
@@ -168,8 +168,8 @@ const AI_RECORD_PROMPT = `请从我上传的车票、机票、行程单、订单
       "durationMinutes": 0,
       "transportNo": "车次或航班号",
       "amountCny": 0,
-      "traveler": "周游",
-      "people": ["周游"],
+      "traveler": "Nova Kepler",
+      "people": ["Nova Kepler"],
       "project": "",
       "confidence": "confirmed | partial | inferred | pending",
       "countsAsAway": true,
@@ -1395,11 +1395,11 @@ const POSTER_STATS = [
   { key: "cost", label: "可见花销", get: () => posterMetric("metricCost") }
 ];
 const POSTER_TEMPLATES = [
-  { id: "journey", name: "行旅地图（默认）", title: "周游 · 旅行地图", subtitle: "", signature: "JOURNEY ATLAS" },
+  { id: "journey", name: "行旅地图（默认）", title: "Nova · Journey Atlas", subtitle: "", signature: "JOURNEY ATLAS" },
   { id: "footprint", name: "我的足迹", title: "我的足迹", subtitle: "用脚步丈量的山河", signature: "" },
   { id: "share", name: "分享留念", title: "这些年走过的地方", subtitle: "", signature: "" }
 ];
-const posterOpts = { size: "a4p", region: "viewport", skin: "warm", title: "周游 · 旅行地图", subtitle: "", signature: "JOURNEY ATLAS", stats: ["days", "hours", "cities"] };
+const posterOpts = { size: "a4p", region: "viewport", skin: "warm", title: "Nova · Journey Atlas", subtitle: "", signature: "JOURNEY ATLAS", stats: ["days", "hours", "cities"] };
 // 海报配色：前 3 套与地图皮肤同名(暖宋纸/板岩灰/深海夜蓝)，其后从开源 maptoposter 的 20 套主题抄入——
 // 底图(纸/陆/水/界)取主题色承载气质，航线/铁路配色按主题明暗自动取常规/夜间套以保持可读。共 23 套。
 // 当前可见范围(实时截图)跟随地图当前皮肤；中国/世界(矢量重绘)用所选配色。
@@ -3530,6 +3530,21 @@ function bindEvents() {
     setupFilters();
     selectedId = records.find(record => record.showInTimeline !== false)?.id || records[0]?.id || "";
     render();
+  });
+
+  // 一键清空：把全部行程清掉，做成你自己的空白地图（写入空集合，刷新后保持为空）。
+  // 想找回示例数据用「重载资料」；想永久清空（部署给别人看也是空的）则把 data/travel-log.json 的 records 改成 []。
+  document.getElementById("clearBtn").addEventListener("click", () => {
+    if (!window.confirm("清空全部数据？\n\n地图、时间线、统计都会归零，方便你录入自己的行程。\n（示例数据可随时用「重载资料」找回。）")) return;
+    stopPlayback();
+    records = [];
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify([], null, 2)); } catch (e) { /* 隐私模式 */ }
+    els.ocrText.value = "";
+    selectedId = "";
+    setupFilters();
+    els.status.textContent = "空白地图，0 条行程";
+    render();
+    document.querySelector(".more-menu")?.removeAttribute("open");
   });
 
   els.fileInput.addEventListener("change", async event => {

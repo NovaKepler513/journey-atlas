@@ -1387,6 +1387,9 @@ body.title-off .stage-title { opacity: 0; transform: translateY(-8px); }
 .more-pop button.more-accent { color: var(--red); font-weight: 600; }
 .more-pop button.more-accent::before { content: "✎ "; font-weight: 400; }
 .more-pop button.more-accent:hover { color: var(--red); }
+/* 「清空全部数据」：破坏性操作——平时中性、悬停转红示警 */
+.more-pop button.more-danger { color: var(--ink-soft); }
+.more-pop button.more-danger:hover { background: rgba(184,66,50,.14); color: var(--red); }
 .stage-actions .view-toggle { border: 1px solid var(--line-strong); border-radius: 5px; overflow: hidden; background: rgba(251,250,244,.82); }
 
 /* —— 顶部居中 当前一段 —— */

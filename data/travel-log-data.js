@@ -1,11 +1,11 @@
 window.TRAVEL_LOG_DATA = {
   "metadata": {
-    "title": "周游 · 旅行地图",
+    "title": "Nova · Journey Atlas",
     "version": "1.0.0",
     "lastUpdated": "2025-12-01",
-    "owner": "周游",
+    "owner": "Nova Kepler",
     "notes": [
-      "示例数据集：人物「周游」与全部行程均为虚构，仅用于演示。",
+      "示例数据集：人物「Nova Kepler」与全部行程均为虚构，仅用于演示。",
       "把 data/travel-log.json 换成你自己的行程即可；字段说明见 docs/DATA_SCHEMA.md。"
     ]
   },
@@ -22,9 +22,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 60,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -47,9 +47,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 1280,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -73,9 +73,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 268,
       "amountCny": 553,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -98,9 +98,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 0,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -123,9 +123,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 760,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -149,9 +149,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 57,
       "amountCny": 73,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -175,9 +175,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 155,
       "amountCny": 980,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -200,9 +200,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 1050,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -226,9 +226,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 170,
       "amountCny": 1120,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -251,9 +251,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 58,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -276,9 +276,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 680,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -302,9 +302,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 82,
       "amountCny": 154,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -328,9 +328,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 170,
       "amountCny": 1260,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -353,9 +353,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 80,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -378,9 +378,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 990,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -404,9 +404,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 266,
       "amountCny": 515,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -429,9 +429,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 120,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -455,9 +455,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 267,
       "amountCny": 515,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -480,9 +480,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 860,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -507,9 +507,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 200,
       "amountCny": 1380,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -534,9 +534,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 36,
       "amountCny": 75,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -560,9 +560,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 1620,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -587,9 +587,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 19,
       "amountCny": 80,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -613,9 +613,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 0,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -639,9 +639,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 23,
       "amountCny": 80,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -666,9 +666,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 175,
       "amountCny": 1520,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -692,9 +692,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 1020,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -718,9 +718,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 230,
       "amountCny": 1680,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -744,9 +744,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 225,
       "amountCny": 1620,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -769,9 +769,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 3600,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -796,9 +796,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 630,
       "amountCny": 5200,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -822,9 +822,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 170,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -847,9 +847,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 2100,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -874,9 +874,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 95,
       "amountCny": 820,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -900,9 +900,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 0,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -925,9 +925,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 1900,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -952,9 +952,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 465,
       "amountCny": 640,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -979,9 +979,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 145,
       "amountCny": 890,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -1006,9 +1006,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 560,
       "amountCny": 5400,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -1032,9 +1032,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 1180,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1058,9 +1058,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 125,
       "amountCny": 980,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1083,9 +1083,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 330,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -1109,9 +1109,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 130,
       "amountCny": 1040,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1134,9 +1134,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 1140,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1160,9 +1160,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 195,
       "amountCny": 1280,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1185,9 +1185,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 100,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -1211,9 +1211,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 185,
       "amountCny": 1320,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1236,9 +1236,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 760,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1262,9 +1262,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 324,
       "amountCny": 724,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1288,9 +1288,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 210,
       "amountCny": 0,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1313,9 +1313,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 228,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -1339,9 +1339,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 210,
       "amountCny": 140,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "inferred",
       "countsAsAway": true,
@@ -1365,9 +1365,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 160,
       "amountCny": 1180,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1390,9 +1390,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 720,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1416,9 +1416,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 218,
       "amountCny": 560,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1441,9 +1441,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 680,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1467,9 +1467,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 65,
       "amountCny": 95,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1492,9 +1492,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 1180,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1518,9 +1518,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 30,
       "amountCny": 40,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1544,9 +1544,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 268,
       "amountCny": 668,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1569,9 +1569,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 3200,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -1596,9 +1596,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 250,
       "amountCny": 1880,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -1623,9 +1623,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 265,
       "amountCny": 2020,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -1649,9 +1649,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 2400,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -1676,9 +1676,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 320,
       "amountCny": 2600,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -1702,9 +1702,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 110,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -1728,9 +1728,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 345,
       "amountCny": 2700,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游",
+        "Nova Kepler",
         "林叙"
       ],
       "confidence": "confirmed",
@@ -1754,9 +1754,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 760,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1780,9 +1780,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 268,
       "amountCny": 514,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1805,9 +1805,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 720,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1831,9 +1831,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 390,
       "amountCny": 360,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "partial",
       "countsAsAway": true,
@@ -1857,9 +1857,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 90,
       "amountCny": 920,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1882,9 +1882,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 2800,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1908,9 +1908,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 385,
       "amountCny": 3100,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1933,9 +1933,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 120,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -1959,9 +1959,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 395,
       "amountCny": 3200,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -1984,9 +1984,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 980,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -2010,9 +2010,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 200,
       "amountCny": 1260,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": true,
@@ -2035,9 +2035,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": null,
       "amountCny": 210,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "confirmed",
       "countsAsAway": false,
@@ -2061,9 +2061,9 @@ window.TRAVEL_LOG_DATA = {
       "durationMinutes": 170,
       "amountCny": 1300,
       "invoiceAmountCny": null,
-      "traveler": "周游",
+      "traveler": "Nova Kepler",
       "people": [
-        "周游"
+        "Nova Kepler"
       ],
       "confidence": "pending",
       "countsAsAway": false,
