@@ -10,6 +10,16 @@
   <link rel="stylesheet" href="./app.css">
 </head>
 <body>
+  <!-- 开屏：项目名一闪而过，资料就绪后淡出 -->
+  <div id="bootScreen" class="boot-screen">
+    <div class="boot-mark">
+      <p class="boot-eyebrow">A PERSONAL TRAVEL ATLAS</p>
+      <h1 id="bootName" class="boot-name">Mapsake</h1>
+      <p class="boot-tag">你走过的路，绘成一张地图</p>
+      <div class="boot-bar"><i></i></div>
+    </div>
+  </div>
+
   <main class="atlas-shell">
 
     <div class="atlas-stage">
@@ -21,7 +31,7 @@
           <!-- 左上：报头 -->
           <div class="stage-title">
             <p class="eyebrow">JOURNEY ATLAS</p>
-            <h1>Nova</h1>
+            <h1>Nova<br>行旅地图</h1>
             <p id="dataStatus" class="source-line">正在读取旅行资料</p>
           </div>
 

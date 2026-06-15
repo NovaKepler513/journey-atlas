@@ -7,12 +7,14 @@ Everything lives in three files: `index.html`, `app.js`, `app.css`. No build ste
 Top of `app.js`:
 
 ```js
+const APP_NAME = "Mapsake";        // project name on the loading screen
 const SITE_TITLE = {
-  eyebrow: "JOURNEY ATLAS",   // small line above the title; "" hides it
-  title:   "Nova",            // \n breaks the line (single line here)
-  docTitle:"Nova · Journey Atlas",   // browser tab
+  eyebrow: "MAPSAKE",         // small line above the title; "" hides it
+  title:   "Nova",           // \n breaks the line (single line here)
+  docTitle:"Nova · Mapsake",  // browser tab
 };
 const OWNER_NAME = "Nova Kepler";  // default traveler; the "self" option in the traveler filter
+const HOME_CITY  = "上海";          // home city — used for the "nights at home" estimate
 ```
 
 You can also edit the masthead **at runtime**: `···` menu → “自定义标题”. That override saves to `localStorage` and wins over `SITE_TITLE` until you hit “恢复默认”.

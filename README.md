@@ -1,4 +1,4 @@
-# Journey Atlas · 旅行地图
+# Mapsake · 旅行地图
 
 > Turn your trips into an editorial-grade interactive atlas — runs entirely in the browser, no backend, your data stays with you.
 >
@@ -6,9 +6,9 @@
 
 ### ▶ [Live demo / 在线演示 →](https://novakepler513.github.io/journey-atlas/)
 
-The demo is populated with a **fictional traveler "Nova Kepler" and entirely made-up trips** — replace `data/travel-log.json` with your own and it becomes yours.
+The demo is populated with a **fictional traveler "Nova Kepler" (based in Shanghai) and entirely made-up trips** — replace `data/travel-log.json` with your own and it becomes yours.
 
-演示里的人物「Nova Kepler」和所有行程都是**虚构示例**，把 `data/travel-log.json` 换成你自己的就好。
+演示里的人物「Nova Kepler」（常居上海）和所有行程都是**虚构示例**，把 `data/travel-log.json` 换成你自己的就好。
 
 ---
 
@@ -44,8 +44,10 @@ Or drop the folder on any static host (GitHub Pages, Netlify, Vercel, Cloudflare
 1. **Your trips** → edit `data/travel-log.json` (schema: [`docs/DATA_SCHEMA.md`](docs/DATA_SCHEMA.md)). Keep `data/travel-log-data.js` in sync (it's the same JSON wrapped as `window.TRAVEL_LOG_DATA = …;`).
 2. **Your name / title** → top of `app.js`:
    ```js
-   const SITE_TITLE = { eyebrow: "JOURNEY ATLAS", title: "Nova", docTitle: "Nova · Journey Atlas" };
+   const APP_NAME   = "Mapsake";       // project name shown on the loading screen
+   const SITE_TITLE = { eyebrow: "MAPSAKE", title: "Nova", docTitle: "Nova · Mapsake" };
    const OWNER_NAME = "Nova Kepler";   // your name / default traveler
+   const HOME_CITY  = "上海";           // your home city (for the "nights at home" estimate)
    ```
    (You can also rename the masthead live from the `···` → “自定义标题” menu — it saves to your browser.)
 3. **New cities** → add coordinates to the `CITY` map in `app.js` (plus `CITY_EN` / `CITY_META` for the poster latin name & country).
@@ -69,6 +71,12 @@ Vanilla JS + [MapLibre GL JS](https://maplibre.org/) + Canvas. No framework, no 
 - `build-real-paths.py` — precompute real rail tracks for your train legs.
 - `merge-records.py` — dedupe & merge new records into the log.
 
+## Credits · 致谢
+
+The **street poster** button (`街道海报 ↗`) doesn't render in-app — it hands you over to the lovely open-source project **[maptoposter](https://maptoposter.0v0.one/)**. I linked it out because the street-grid posters it makes are genuinely beautiful, and there was no point reinventing that. **Go play with it** — drop in any city and it generates a gorgeous printable street poster. Huge thanks to its author. 🙏
+
+应用里的「街道海报 ↗」按钮不在本项目内渲染，而是把你交接给另一个很棒的开源项目 **[maptoposter](https://maptoposter.0v0.one/)**。之所以做成跳转，是因为它生成的街道路网海报真的很漂亮，没必要再造一遍轮子。**强烈推荐大家去逛逛**：随便填一个城市，它就能生成一张精美、可打印的街道海报。在此特别感谢作者。🙏
+
 ## License
 
-[MIT](LICENSE) © Nova Kepler. Demo data is fictional. Base-map and geo datasets retain their respective licenses.
+[MIT](LICENSE) © Nova Kepler. Demo data is fictional. Base-map and geo datasets retain their respective licenses. The linked [maptoposter](https://maptoposter.0v0.one/) project is independent and retains its own.

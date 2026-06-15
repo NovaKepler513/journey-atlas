@@ -1,17 +1,23 @@
 /* ============================================================
- *  自定义标题报头 —— 开源后改这一处，就能换成你自己的名字
- *  eyebrow : 左上小字（英文台头），留空则不显示
- *  title   : 主标题，用 \n 换行（默认两行）
- *  docTitle: 浏览器标签页标题
+ *  品牌 / 个性化配置 —— 开源后改这几处，就能换成你自己的
+ *  APP_NAME  : 项目名（加载页 / 文档展示用）
+ *  SITE_TITLE: 左上报头 —— eyebrow 小字台头 / title 主标题(\n 换行) / docTitle 标签页
+ *  OWNER_NAME: 站点主人 / 默认旅客名
+ *  HOME_CITY : 常居城市（"不在外地的时间默认在家" → 推算在家夜数）
  * ============================================================ */
+const APP_NAME = "Mapsake";
+
 const SITE_TITLE = {
-  eyebrow: "JOURNEY ATLAS",
-  title: "Nova",
-  docTitle: "Nova · Journey Atlas",
+  eyebrow: "MAPSAKE",
+  title: "Nova\n行旅地图",
+  docTitle: "Nova · 行旅地图",
 };
 
 // 站点主人 / 默认旅客名 —— 开源后改成你自己的；示例为虚构人物「Nova Kepler」。
 const OWNER_NAME = "Nova Kepler";
+
+// 常居城市 —— 用于"在家夜数"的互补推算；改成你自己的主城。
+const HOME_CITY = "上海";
 
 const STORAGE_KEY = "journeyatlas_records_v1";
 const DATA_URL = "./data/travel-log.json";
@@ -583,7 +589,7 @@ function renderStatsPanel(list) {
       continents.set(m.continent, (continents.get(m.continent) || 0) + 1);
     });
     if (r.origin && r.destination && r.origin !== r.destination) {
-      // 高频路线按"双向合并"计数：北京↔深圳算一条走廊——有向拆分会把直觉里的次数稀释一半
+      // 高频路线按"双向合并"计数：A↔B 算一条走廊——有向拆分会把直觉里的次数稀释一半
       const pair = [stripShi(r.origin), stripShi(r.destination)].sort();
       const key = `${pair[0]} ⇌ ${pair[1]}`;
       routeCount.set(key, (routeCount.get(key) || 0) + 1);
@@ -604,15 +610,15 @@ function renderStatsPanel(list) {
       if (nights > 0) { const c = normCity(a.destination); cityNights.set(c, (cityNights.get(c) || 0) + nights); }
     }
   }
-  // 主城（home）：默认"不在外地的时间都在主城"。链式夜数对主城是严重低估
-  // （链一断北京段就丢），改用互补口径：数据总跨度 − 在外地的夜数 − 在途夜数(粗略)。
+  // 主城（HOME_CITY）：默认"不在外地的时间都在主城"。链式夜数对主城是严重低估
+  // （链一断主城段就丢），改用互补口径：数据总跨度 − 在外地的夜数 − 在途夜数(粗略)。
   if (dwellSegs.length > 1) {
     const first = dwellSegs[0].startDate, last = dwellSegs[dwellSegs.length - 1].startDate;
     const totalNights = Math.max(0, daysBetween(first, last).length - 1);
     let awayNights = 0;
-    cityNights.forEach((n, c) => { if (c !== "北京") awayNights += n; });
-    const bjHome = Math.max(cityNights.get("北京") || 0, totalNights - awayNights - Math.round(dwellSegs.length * 0.25));
-    cityNights.set("北京", bjHome);
+    cityNights.forEach((n, c) => { if (c !== HOME_CITY) awayNights += n; });
+    const homeNights = Math.max(cityNights.get(HOME_CITY) || 0, totalNights - awayNights - Math.round(dwellSegs.length * 0.25));
+    cityNights.set(HOME_CITY, homeNights);
   }
 
   const fmt = n => n.toLocaleString("en-US");
@@ -637,7 +643,7 @@ function renderStatsPanel(list) {
   ).join("");
 
   // 城市排行：改为「待得最久」——按累计停留夜数排序，数字显示「X晚 · Y次」(几晚+到访几次)。
-  // 条宽用 sqrt 缩放，免得北京(在家)夜数过大把其它城压成细条；无夜数(纯过境/断点)的城退回按到访次数。
+  // 条宽用 sqrt 缩放，免得主城(在家)夜数过大把其它城压成细条；无夜数(纯过境/断点)的城退回按到访次数。
   const cityAgg = [...cityVisits.entries()].map(([name, visits]) => ({ name, visits, nights: cityNights.get(normCity(name)) || 0 }));
   cityAgg.sort((a, b) => (b.nights - a.nights) || (b.visits - a.visits));
   const cityTopN = cityAgg.slice(0, 10);
@@ -1230,7 +1236,7 @@ function renderMap(list) {
 
 // —— 旅行档案 · 跨榜悬停联动 ——
 // 悬停任意一行：本榜其余行温柔退灰（聚光灯）；同时把"数据上相关"的行跨榜点亮——
-// hover 城市「北京」→ 路线榜所有含北京的走廊、国家榜「中国」保持全亮；hover 一条路线 → 两端城市与所属国家亮。
+// hover 某城市 → 路线榜所有含该城市的走廊、其所属国家榜保持全亮；hover 一条路线 → 两端城市与所属国家亮。
 // 只有亮度层级变化，无位移无弹跳；事件委托一次绑定，250ms ease 呼吸。
 let statsHoverWired = false;
 function wireStatsHover() {
@@ -2000,7 +2006,7 @@ function renderLedger(list) {
   els.ledgerCount.textContent = `${list.length} 条`;
   els.ledgerBody.innerHTML = list.map(record => {
     // 标题与"起→讫"相同（绝大多数移动段）就不重复印两行——避免"广州 → 广州"叠两遍
-    const sameCity = record.origin && record.origin === record.destination;   // 门票/停留：副行"北京 → 北京"无信息量
+    const sameCity = record.origin && record.origin === record.destination;   // 门票/停留：副行"上海 → 上海"无信息量
     const route = sameCity ? "" : [record.origin, record.destination].filter(Boolean).join(" → ");
     const title = displayTitle(record);
     const sub = route && route !== title ? `<br><span class="ld-sub">${escapeHtml(route)}</span>` : "";
@@ -2417,12 +2423,24 @@ function buildColorGrid() {
   });
 }
 
+// 轻量提示：一闪而过的 toast。
+function flashToast(msg, ms = 1800) {
+  let t = document.getElementById("appToast");
+  if (!t) { t = document.createElement("div"); t.id = "appToast"; t.className = "app-toast"; document.body.appendChild(t); }
+  t.innerHTML = msg;
+  t.classList.remove("show"); void t.offsetWidth; t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), ms);
+}
+
 // 城市街道海报：跳转到开源项目 maptoposter（街景海报用它原版生成，不再内置渲染）。
-// 站点未公开 city 参数，故打开首页、并把聚焦城市的英文名复制到剪贴板，方便到那边粘贴。
+// 跳转前先一闪而过提示要去的是另一个项目；并把聚焦城市英文名复制到剪贴板，方便到那边粘贴。
 function openStreetPosterSite(city) {
   const latin = city ? titleCase(cityLatin(stripShi(city))) : "";
   if (latin && navigator.clipboard) navigator.clipboard.writeText(latin).catch(() => {});
-  window.open("https://maptoposter.0v0.one/", "_blank", "noopener");
+  flashToast("即将前往另一个开源项目 <b>maptoposter</b> 生成街道海报 ↗", 1700);
+  // 延迟一点点再打开（仍在用户手势的有效激活窗口内），好让提示被看见。
+  setTimeout(() => window.open("https://maptoposter.0v0.one/", "_blank", "noopener"), 820);
 }
 
 // 可传城市名（右键城市点时）；不传则用当前聚焦城市（按钮）。事件对象不算城市名。
@@ -3635,7 +3653,19 @@ function bindEvents() {
   });
 }
 
+// 开屏淡出：地图就绪即收，加 2.6s 兜底，并保证最短停留 ~900ms（让项目名被看见）。
+let bootStartTs = Date.now();
+function hideBootScreen() {
+  const b = document.getElementById("bootScreen");
+  if (!b || b.classList.contains("hide")) return;
+  const wait = Math.max(0, 900 - (Date.now() - bootStartTs));
+  setTimeout(() => { b.classList.add("hide"); setTimeout(() => b.remove(), 650); }, wait);
+}
+
 async function init() {
+  bootStartTs = Date.now();
+  const bootName = document.getElementById("bootName");
+  if (bootName) bootName.textContent = APP_NAME;   // 开屏项目名以 APP_NAME 为准
   try {
     await loadData();
   } catch (error) {
@@ -3651,6 +3681,8 @@ async function init() {
   applyTitleVis();   // 恢复上次的「标题报头」显隐（localStorage 记忆）
   selectedId = records.find(record => record.showInTimeline !== false)?.id || records[0]?.id || "";
   initGlMap();   // 异步加载瓦片，load 后会再 render() 画路线/城市
+  try { glMap && glMap.once("load", hideBootScreen); } catch (e) { /* 兜底见下 */ }
+  setTimeout(hideBootScreen, 2600);   // 兜底：瓦片慢/离线也不会卡住开屏
   render();      // 先把时间线/档案/详情等非地图部分填上
 }
 

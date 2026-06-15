@@ -1769,3 +1769,21 @@ body.immersive .map-surface { height: 100dvh; }          /* iOS 地址栏吃高�
 #routeRank li.lit .rk-idx { color: var(--red); font-weight: 600; }
 #routeRank li.lit .rk-dots { border-bottom-color: rgba(184,66,50,.5); border-bottom-style: solid; }
 @media (prefers-reduced-motion: reduce) { .rank-list li, .rank-list li .rk-bar i { transition: none; } }
+
+/* —— 开屏 loading：项目名一闪而过，资料就绪后淡出 —— */
+.boot-screen { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: var(--paper); transition: opacity .55s ease; }
+.boot-screen.hide { opacity: 0; pointer-events: none; }
+.boot-mark { text-align: center; padding: 24px; }
+.boot-eyebrow { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .26em; color: var(--red); margin: 0 0 14px; }
+.boot-name { font-family: var(--serif); font-weight: 600; font-size: clamp(46px, 9vw, 92px); letter-spacing: .04em; line-height: 1; color: var(--ink); margin: 0; }
+.boot-tag { font-family: var(--sans); font-size: 13px; letter-spacing: .08em; color: var(--ink-soft); margin: 18px 0 0; }
+.boot-bar { width: 132px; height: 2px; margin: 26px auto 0; background: rgba(40,38,34,.12); border-radius: 2px; overflow: hidden; }
+.boot-bar i { display: block; height: 100%; width: 38%; background: var(--red); border-radius: 2px; animation: bootSlide 1.15s cubic-bezier(.4,0,.2,1) infinite; }
+@keyframes bootSlide { 0% { transform: translateX(-120%); } 100% { transform: translateX(340%); } }
+:root[data-skin="night"] .boot-screen { background: #0c1a30; }
+:root[data-skin="night"] .boot-name { color: #f1f6ff; }
+
+/* —— 一闪而过 toast —— */
+.app-toast { position: fixed; left: 50%; top: 38px; transform: translateX(-50%) translateY(-10px); z-index: 120; max-width: 88vw; padding: 11px 18px; border-radius: 11px; background: rgba(28,26,22,.93); color: #fbfaf4; font-family: var(--sans); font-size: 13px; letter-spacing: .02em; box-shadow: 0 14px 36px rgba(20,20,30,.3); opacity: 0; pointer-events: none; transition: opacity .32s ease, transform .32s cubic-bezier(.3,0,.2,1); }
+.app-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.app-toast b { font-weight: 600; color: #ffd9c8; }

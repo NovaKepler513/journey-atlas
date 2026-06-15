@@ -5,7 +5,7 @@ Your trips live in **`data/travel-log.json`**. Keep **`data/travel-log-data.js`*
 ```jsonc
 {
   "metadata": {
-    "title": "Nova · Journey Atlas",
+    "title": "Nova · Mapsake",
     "version": "1.0.0",
     "lastUpdated": "2025-12-01",
     "owner": "Nova Kepler",
