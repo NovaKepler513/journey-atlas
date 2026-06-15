@@ -6,9 +6,9 @@
 
 ### ▶ [Live demo / 在线演示 →](https://novakepler513.github.io/journey-atlas/)
 
-The demo is populated with a **fictional traveler "Nova Kepler" (based in Shanghai) and entirely made-up trips** — replace `data/travel-log.json` with your own and it becomes yours.
+The demo ships with **two fictional travelers** so you can see the per-traveler filter at work: **Nova Kepler** (Shanghai-based — lots of flights plus a dense domestic high-speed-rail web) and **林叙 / Lin Xu** (flies to Japan & Europe, then rides trains everywhere abroad). Switch the **旅客 (traveler)** filter and the whole map changes shape. All trips are made up — replace `data/travel-log.json` with your own.
 
-演示里的人物「Nova Kepler」（常居上海）和所有行程都是**虚构示例**，把 `data/travel-log.json` 换成你自己的就好。
+演示内置**两位虚构旅客**，方便你看「按旅客筛选」的效果：**Nova Kepler**（常居上海，大量航班 + 密集的国内高铁/城际）与 **林叙**（飞到日本、欧洲后，在当地大量坐火车）。切换上方的**旅客**筛选，整张地图的形状都会变。所有行程均为虚构，把 `data/travel-log.json` 换成你自己的即可。
 
 ---
 
