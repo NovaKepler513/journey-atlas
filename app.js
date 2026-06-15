@@ -882,9 +882,22 @@ function rememberCity(name, lat, lng, en) {
   saved[name] = { lat, lng, en: en || "" };
   try { localStorage.setItem(USER_CITY_KEY, JSON.stringify(saved)); } catch (e) { /* 忽略 */ }
 }
-// Photon 检索 → 候选数组；每条带"省/州·市/县（国内）"或"地区·国家（海外）"上下文 + 国内/海外标记 + 真实坐标。
+// 国家代码 → 大洲（用于候选标签按大洲着色）。未列出的归 other。
+const CONTINENT_ZH = { as: "亚洲", eu: "欧洲", na: "北美", sa: "南美", af: "非洲", oc: "大洋洲", other: "海外" };
+const CC_CONTINENT = {
+  JP:"as",KR:"as",TH:"as",SG:"as",MY:"as",VN:"as",ID:"as",PH:"as",IN:"as",AE:"as",QA:"as",SA:"as",IL:"as",TR:"as",KH:"as",LA:"as",MM:"as",NP:"as",LK:"as",PK:"as",BD:"as",KZ:"as",UZ:"as",MN:"as",BT:"as",BN:"as",
+  FR:"eu",IT:"eu",DE:"eu",AT:"eu",CH:"eu",NL:"eu",BE:"eu",ES:"eu",GB:"eu",IE:"eu",PT:"eu",GR:"eu",CZ:"eu",HU:"eu",PL:"eu",SE:"eu",NO:"eu",FI:"eu",DK:"eu",RU:"eu",UA:"eu",RO:"eu",HR:"eu",IS:"eu",LU:"eu",MC:"eu",VA:"eu",SK:"eu",SI:"eu",EE:"eu",LV:"eu",LT:"eu",BG:"eu",RS:"eu",
+  US:"na",CA:"na",MX:"na",CU:"na",CR:"na",PA:"na",
+  BR:"sa",AR:"sa",CL:"sa",PE:"sa",CO:"sa",UY:"sa",BO:"sa",EC:"sa",
+  EG:"af",ZA:"af",MA:"af",KE:"af",NG:"af",TZ:"af",ET:"af",TN:"af",
+  AU:"oc",NZ:"oc",FJ:"oc"
+};
+function continentOf(cc) { const k = CC_CONTINENT[String(cc || "").toUpperCase()] || "other"; return { key: k, zh: CONTINENT_ZH[k] }; }
+
+// Photon 检索 → 候选数组。lang=default 取 OSM 本地名（中国地点显中文、日本显日文…，不受浏览器语言影响）；
+// 每条带"省·市/县（中国）"或"地区·国家（海外）"上下文 + 中国/大洲标记 + 真实坐标。
 async function photonSearch(q) {
-  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8`;
+  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=default`;
   const r = await fetch(url, { headers: { Accept: "application/json" } });
   if (!r.ok) throw new Error("geocode http " + r.status);
   const j = await r.json();
@@ -894,13 +907,14 @@ async function photonSearch(q) {
     const [lng, lat] = f.geometry.coordinates;
     const p = f.properties || {};
     const name = p.name || p.city || p.county || p.district || q;
-    const domestic = p.countrycode === "CN" || p.country === "中国" || p.country === "China";
+    const cc = String(p.countrycode || "").toUpperCase();
+    const domestic = ["CN", "HK", "MO", "TW"].includes(cc) || p.country === "中国" || p.country === "China";
     const parts = domestic ? [p.state, p.county || p.city || p.district] : [p.state || p.city, p.country];
     const ctx = [...new Set(parts.filter(x => x && x !== name))].join(" · ");
     const en = /^[\x00-\x7f]+$/.test(p.name || "") ? (p.name || "").toUpperCase() : "";
     const key = `${name}|${(+lat).toFixed(2)}|${(+lng).toFixed(2)}`;
     if (seen.has(key)) return; seen.add(key);
-    out.push({ name, lat: +(+lat).toFixed(4), lng: +(+lng).toFixed(4), domestic, ctx, country: p.country || "", en });
+    out.push({ name, lat: +(+lat).toFixed(4), lng: +(+lng).toFixed(4), domestic, ctx, country: p.country || "", cont: continentOf(cc), en });
   });
   return out;
 }
@@ -931,7 +945,7 @@ function setupGeoInput(input) {
       `<li data-i="${i}"${i === active ? ' class="active"' : ""}>` +
       `<span class="gs-name">${escapeHtml(c.name)}</span>` +
       (c.ctx ? `<span class="gs-ctx">${escapeHtml(c.ctx)}</span>` : "") +
-      `<span class="gs-tag ${c.domestic ? "cn" : "intl"}">${c.domestic ? "国内" : (escapeHtml(c.country) || "海外")}</span></li>`
+      `<span class="gs-tag ${c.domestic ? "cn" : "c-" + c.cont.key}">${c.domestic ? "中国" : (escapeHtml(c.country) || c.cont.zh)}</span></li>`
     ).join("") : `<li class="gs-empty">没找到「${escapeHtml(lastQ)}」——换个写法或更具体的名字（可加省份，如「恩施 茅田」）</li>`;
     box.hidden = false;
   };
