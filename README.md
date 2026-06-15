@@ -1,4 +1,4 @@
-# Mapsake · 旅行地图
+# Roamap · 旅行地图
 
 > Turn your trips into an editorial-grade interactive atlas — runs entirely in the browser, no backend, your data stays with you.
 >
@@ -44,8 +44,8 @@ Or drop the folder on any static host (GitHub Pages, Netlify, Vercel, Cloudflare
 1. **Your trips** → edit `data/travel-log.json` (schema: [`docs/DATA_SCHEMA.md`](docs/DATA_SCHEMA.md)). Keep `data/travel-log-data.js` in sync (it's the same JSON wrapped as `window.TRAVEL_LOG_DATA = …;`).
 2. **Your name / title** → top of `app.js`:
    ```js
-   const APP_NAME   = "Mapsake";       // project name shown on the loading screen
-   const SITE_TITLE = { eyebrow: "MAPSAKE", title: "Nova", docTitle: "Nova · Mapsake" };
+   const APP_NAME   = "Roamap";       // project name shown on the loading screen
+   const SITE_TITLE = { eyebrow: "ROAMAP", title: "Nova\n行旅地图", docTitle: "Nova · 行旅地图" };
    const OWNER_NAME = "Nova Kepler";   // your name / default traveler
    const HOME_CITY  = "上海";           // your home city (for the "nights at home" estimate)
    ```

@@ -5,10 +5,10 @@
  *  OWNER_NAME: 站点主人 / 默认旅客名
  *  HOME_CITY : 常居城市（"不在外地的时间默认在家" → 推算在家夜数）
  * ============================================================ */
-const APP_NAME = "Mapsake";
+const APP_NAME = "Roamap";
 
 const SITE_TITLE = {
-  eyebrow: "MAPSAKE",
+  eyebrow: "ROAMAP",
   title: "Nova\n行旅地图",
   docTitle: "Nova · 行旅地图",
 };

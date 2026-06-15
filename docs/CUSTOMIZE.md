@@ -7,11 +7,11 @@ Everything lives in three files: `index.html`, `app.js`, `app.css`. No build ste
 Top of `app.js`:
 
 ```js
-const APP_NAME = "Mapsake";        // project name on the loading screen
+const APP_NAME = "Roamap";        // project name on the loading screen
 const SITE_TITLE = {
-  eyebrow: "MAPSAKE",         // small line above the title; "" hides it
+  eyebrow: "ROAMAP",         // small line above the title; "" hides it
   title:   "Nova",           // \n breaks the line (single line here)
-  docTitle:"Nova · Mapsake",  // browser tab
+  docTitle:"Nova · 行旅地图",  // browser tab
 };
 const OWNER_NAME = "Nova Kepler";  // default traveler; the "self" option in the traveler filter
 const HOME_CITY  = "上海";          // home city — used for the "nights at home" estimate
