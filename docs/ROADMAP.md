@@ -13,6 +13,7 @@ Honest list of what's rough or missing today, and how a future update could fix 
 - **Foreign places typed with a Chinese exonym may not be found** (the geocoder, Photon/OSM, indexes mostly local/English names — e.g. `Reykjavik` works, `雷克雅未克` may not). → *Future:* bundle a Chinese↔local alias table for common world cities, or a multilingual geocoder. · 外国地名用中文译名可能查不到（用当地名/英文名最稳）；未来内置中英对照表。
 - **Same-named places** (two "Reykjavik") can resolve to the wrong one on free-typed submit. The autocomplete dropdown shows `name · region · country` to disambiguate — pick from it. → *Future:* a small map-pin confirmation, or store the picked coordinate explicitly. · 同名地点可能选错；下拉有"地区·国家"标注可区分，未来加地图点选确认。
 - **Geocoded coordinates live in your browser (localStorage), not inside each record.** If you export the JSON and load it on a *different* machine, custom-place coords won't travel with it (built-in cities are fine). → *Future:* optionally write `lat`/`lng` into the record on add. · 新查到的坐标存在浏览器里、不写进记录；换设备导入时自定义地点可能缺坐标；未来可把坐标写进记录。
+- **Chinese-user-first language.** Results rank admin places first (city/county/town before POIs) and display in a readable script — Chinese for CN, local name if Latin/CJK, else English. There's no per-user language switch or guaranteed native-name display yet. → *Future:* multilingual UI + an option to keep every place's native name (or show native on the map, English in search). · 当前以中文用户为主（行政地名优先、看不懂的字回退英文）；尚无按用户语言切换/保证显示母语名；未来做多语言 + 保留母语名的选项。
 
 ## Routes & rail tracks · 路线与铁轨
 

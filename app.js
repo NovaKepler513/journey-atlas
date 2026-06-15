@@ -885,12 +885,12 @@ function rememberCity(name, lat, lng, en) {
 // 国家代码 → 大洲（用于候选标签按大洲着色）。未列出的归 other。
 const CONTINENT_ZH = { as: "亚洲", eu: "欧洲", na: "北美", sa: "南美", af: "非洲", oc: "大洋洲", other: "海外" };
 const CC_CONTINENT = {
-  JP:"as",KR:"as",TH:"as",SG:"as",MY:"as",VN:"as",ID:"as",PH:"as",IN:"as",AE:"as",QA:"as",SA:"as",IL:"as",TR:"as",KH:"as",LA:"as",MM:"as",NP:"as",LK:"as",PK:"as",BD:"as",KZ:"as",UZ:"as",MN:"as",BT:"as",BN:"as",
-  FR:"eu",IT:"eu",DE:"eu",AT:"eu",CH:"eu",NL:"eu",BE:"eu",ES:"eu",GB:"eu",IE:"eu",PT:"eu",GR:"eu",CZ:"eu",HU:"eu",PL:"eu",SE:"eu",NO:"eu",FI:"eu",DK:"eu",RU:"eu",UA:"eu",RO:"eu",HR:"eu",IS:"eu",LU:"eu",MC:"eu",VA:"eu",SK:"eu",SI:"eu",EE:"eu",LV:"eu",LT:"eu",BG:"eu",RS:"eu",
-  US:"na",CA:"na",MX:"na",CU:"na",CR:"na",PA:"na",
-  BR:"sa",AR:"sa",CL:"sa",PE:"sa",CO:"sa",UY:"sa",BO:"sa",EC:"sa",
-  EG:"af",ZA:"af",MA:"af",KE:"af",NG:"af",TZ:"af",ET:"af",TN:"af",
-  AU:"oc",NZ:"oc",FJ:"oc"
+  JP:"as",KR:"as",KP:"as",TH:"as",SG:"as",MY:"as",VN:"as",ID:"as",PH:"as",IN:"as",AE:"as",QA:"as",SA:"as",IL:"as",TR:"as",KH:"as",LA:"as",MM:"as",NP:"as",LK:"as",PK:"as",BD:"as",KZ:"as",UZ:"as",MN:"as",BT:"as",BN:"as",IR:"as",IQ:"as",SY:"as",YE:"as",JO:"as",LB:"as",OM:"as",KW:"as",BH:"as",GE:"as",AM:"as",AZ:"as",AF:"as",TM:"as",KG:"as",TJ:"as",MV:"as",
+  FR:"eu",IT:"eu",DE:"eu",AT:"eu",CH:"eu",NL:"eu",BE:"eu",ES:"eu",GB:"eu",IE:"eu",PT:"eu",GR:"eu",CZ:"eu",HU:"eu",PL:"eu",SE:"eu",NO:"eu",FI:"eu",DK:"eu",RU:"eu",UA:"eu",RO:"eu",HR:"eu",IS:"eu",LU:"eu",MC:"eu",VA:"eu",SK:"eu",SI:"eu",EE:"eu",LV:"eu",LT:"eu",BG:"eu",RS:"eu",CY:"eu",MT:"eu",AL:"eu",MK:"eu",BA:"eu",ME:"eu",
+  US:"na",CA:"na",MX:"na",CU:"na",CR:"na",PA:"na",GT:"na",DO:"na",JM:"na",BS:"na",HN:"na",NI:"na",SV:"na",
+  BR:"sa",AR:"sa",CL:"sa",PE:"sa",CO:"sa",UY:"sa",BO:"sa",EC:"sa",VE:"sa",PY:"sa",
+  EG:"af",ZA:"af",MA:"af",KE:"af",NG:"af",TZ:"af",ET:"af",TN:"af",DZ:"af",LY:"af",SD:"af",GH:"af",CI:"af",SN:"af",UG:"af",ZW:"af",ZM:"af",MZ:"af",MU:"af",
+  AU:"oc",NZ:"oc",FJ:"oc",PG:"oc",PF:"oc",NC:"oc"
 };
 function continentOf(cc) { const k = CC_CONTINENT[String(cc || "").toUpperCase()] || "other"; return { key: k, zh: CONTINENT_ZH[k] }; }
 
@@ -898,10 +898,22 @@ function continentOf(cc) { const k = CC_CONTINENT[String(cc || "").toUpperCase()
 const NON_READABLE = /[֐-׿؀-ۿݐ-ݿЀ-ԯ฀-๿Ͱ-Ͽ԰-֏가-힯ᄀ-ᇿ㄰-㆏ऀ-෿]/;
 function preferReadable(local, en) { local = local || ""; return (local && !NON_READABLE.test(local)) ? local : (en || local); }
 
+// 候选排序权重：行政地名（市/县/镇…）排前，景点/街道/建筑等 POI 往后（要找 POI 直接搜它的名字）。
+const PLACE_ORDER = { country: 11, continent: 10, city: 8, municipality: 8, town: 7, county: 7, prefecture: 7, district: 6, province: 6, state: 6, region: 6, island: 5, suburb: 5, borough: 5, village: 5, hamlet: 4, locality: 4, quarter: 3, neighbourhood: 3 };
+function placeRank(p, q) {
+  let s;
+  if (p.osm_key === "place") s = 30 + (PLACE_ORDER[p.osm_value] || 2);
+  else if (p.osm_key === "boundary" && p.osm_value === "administrative") s = 28;
+  else s = 6;                                   // amenity/tourism/highway/building/railway… = POI，靠后
+  if (p.name && p.name === q) s += 2;            // 名称恰好等于搜索词，微弱加权
+  return s;
+}
+
 // Photon 检索 → 候选数组。同时取 default(本地名) 与 en(英文名)：本地名可读(中文/日文/拉丁)就用本地名，
 // 不可读(阿拉伯/西里尔/泰…)就退英文。每条带"省·市/县(中国)"或"地区·国家(海外)" + 中国/大洲标记 + 真实坐标。
+// 结果按行政级别排序：地级市/县/镇在前，景点/街道在后。
 async function photonSearch(q) {
-  const base = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8`;
+  const base = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=12`;
   const grab = (lang) => fetch(`${base}&lang=${lang}`, { headers: { Accept: "application/json" } })
     .then(r => r.ok ? r.json() : { features: [] }).catch(() => ({ features: [] }));
   const [jd, je] = await Promise.all([grab("default"), grab("en")]);
@@ -923,9 +935,10 @@ async function photonSearch(q) {
     const en = /^[\x00-\x7f]+$/.test(e.name || "") ? (e.name || "").toUpperCase() : "";
     const key = `${(+lat).toFixed(3)},${(+lng).toFixed(3)}`;
     if (seen.has(key)) return; seen.add(key);
-    out.push({ name, lat: +(+lat).toFixed(4), lng: +(+lng).toFixed(4), domestic, ctx, country, cont: continentOf(cc), en });
+    out.push({ name, lat: +(+lat).toFixed(4), lng: +(+lng).toFixed(4), domestic, ctx, country, cont: continentOf(cc), en, _rank: placeRank(d, q), _i: out.length });
   });
-  return out;
+  out.sort((a, b) => b._rank - a._rank || a._i - b._i);   // 行政地名优先；同级保留 Photon 原始相关度顺序
+  return out.slice(0, 8);
 }
 // 解析地名→坐标并入 CITY（提交时兜底用）：已收录/已选中直接用；否则在线取第一个。
 async function resolvePlace(name) {

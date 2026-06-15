@@ -60,6 +60,8 @@ Full guide: [`docs/CUSTOMIZE.md`](docs/CUSTOMIZE.md).
 - **Ticket OCR is currently disabled.** Reading trips automatically from ticket photos/screenshots needs a recognition backend (OCR/AI), which a pure static site can't bundle. The entry form is manual for now; we may add OCR later if there's demand — open an issue. · **票据 OCR 暂时关闭**：从车票截图自动识别行程需要一个识别后端，纯静态站点无法内置，目前请手动录入；后续若有需要可能补上，欢迎提 issue。
 - **Rail tracks:** China is covered by a built-in template + live routing; some overseas networks and any cross-ocean "rail" leg can't be traced and show a smooth arc instead. · **铁路轨迹**：中国已内置模板并支持在线补轨；部分境外线网与跨洋"铁路"段无法描出真实轨道，会以平滑弧线表示。
 
+- **Place names & language:** search results are ranked admin-first (city / county / town before landmarks) and shown in a script you can read — Chinese for Chinese places, the local name when it's Latin/Chinese/Japanese, otherwise English (so Arabic / Cyrillic / Thai names don't show as unreadable glyphs). This build is **Chinese-user-first**; a fuller multilingual experience (per-user language, keeping every place's native name) is future work. · **地名与语言**：候选按行政级别排序（市/县/镇在前，景点靠后），并以你能读的文字显示（中国地点中文；当地名是拉丁/中日文就保留，否则回退英文）。**当前以中文用户为主**；更完整的多语言（按用户语言、保留各地母语名）是未来方向。
+
 Full list of current limitations and what could fix them: **[docs/ROADMAP.md](docs/ROADMAP.md)**. Release notes: **[CHANGELOG.md](CHANGELOG.md)**.
 完整的已知限制与未来解法见 **[docs/ROADMAP.md](docs/ROADMAP.md)**；更新记录见 **[CHANGELOG.md](CHANGELOG.md)**。
 
