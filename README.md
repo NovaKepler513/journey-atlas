@@ -60,6 +60,9 @@ Full guide: [`docs/CUSTOMIZE.md`](docs/CUSTOMIZE.md).
 - **Ticket OCR is currently disabled.** Reading trips automatically from ticket photos/screenshots needs a recognition backend (OCR/AI), which a pure static site can't bundle. The entry form is manual for now; we may add OCR later if there's demand — open an issue. · **票据 OCR 暂时关闭**：从车票截图自动识别行程需要一个识别后端，纯静态站点无法内置，目前请手动录入；后续若有需要可能补上，欢迎提 issue。
 - **Rail tracks:** China is covered by a built-in template + live routing; some overseas networks and any cross-ocean "rail" leg can't be traced and show a smooth arc instead. · **铁路轨迹**：中国已内置模板并支持在线补轨；部分境外线网与跨洋"铁路"段无法描出真实轨道，会以平滑弧线表示。
 
+Full list of current limitations and what could fix them: **[docs/ROADMAP.md](docs/ROADMAP.md)**. Release notes: **[CHANGELOG.md](CHANGELOG.md)**.
+完整的已知限制与未来解法见 **[docs/ROADMAP.md](docs/ROADMAP.md)**；更新记录见 **[CHANGELOG.md](CHANGELOG.md)**。
+
 ## Privacy · 隐私
 
 Everything runs client-side. There is no server, no analytics, no account. Your `travel-log.json` lives in your repo / your browser only. When self-hosting publicly, remember the data file is public — keep out anything you don't want shared.
