@@ -882,58 +882,81 @@ function rememberCity(name, lat, lng, en) {
   saved[name] = { lat, lng, en: en || "" };
   try { localStorage.setItem(USER_CITY_KEY, JSON.stringify(saved)); } catch (e) { /* 忽略 */ }
 }
-const geoCache = new Map();   // 输入候选 name → {lat,lng,en}
+// Photon 检索 → 候选数组；每条带"省/州·市/县（国内）"或"地区·国家（海外）"上下文 + 国内/海外标记 + 真实坐标。
 async function photonSearch(q) {
-  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=6`;
+  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8`;
   const r = await fetch(url, { headers: { Accept: "application/json" } });
   if (!r.ok) throw new Error("geocode http " + r.status);
   const j = await r.json();
-  return (j.features || []).map(f => {
+  const out = [], seen = new Set();
+  (j.features || []).forEach(f => {
+    if (!f.geometry || f.geometry.type !== "Point") return;
     const [lng, lat] = f.geometry.coordinates;
     const p = f.properties || {};
-    const name = p.name || p.city || p.county || q;
-    const ctx = [p.state, p.country].filter(Boolean).join(" · ");
+    const name = p.name || p.city || p.county || p.district || q;
+    const domestic = p.countrycode === "CN" || p.country === "中国" || p.country === "China";
+    const parts = domestic ? [p.state, p.county || p.city || p.district] : [p.state || p.city, p.country];
+    const ctx = [...new Set(parts.filter(x => x && x !== name))].join(" · ");
     const en = /^[\x00-\x7f]+$/.test(p.name || "") ? (p.name || "").toUpperCase() : "";
-    return { name, lat: +lat.toFixed(4), lng: +lng.toFixed(4), label: ctx ? `${name} · ${ctx}` : name, en };
+    const key = `${name}|${(+lat).toFixed(2)}|${(+lng).toFixed(2)}`;
+    if (seen.has(key)) return; seen.add(key);
+    out.push({ name, lat: +(+lat).toFixed(4), lng: +(+lng).toFixed(4), domestic, ctx, country: p.country || "", en });
   });
+  return out;
 }
-// 把一个地名解析成坐标并并入 CITY；已知/缓存/在线查得到任一即成功。
+// 解析地名→坐标并入 CITY（提交时兜底用）：已收录/已选中直接用；否则在线取第一个。
 async function resolvePlace(name) {
   const clean = stripShi(String(name || "").trim());
   if (!clean) return false;
   if (cityLngLat(clean)) return true;
-  if (geoCache.has(clean)) { const c = geoCache.get(clean); rememberCity(clean, c.lat, c.lng, c.en); return true; }
   try {
     const res = await photonSearch(clean);
-    if (res.length) {
-      const c = res[0];
-      rememberCity(clean, c.lat, c.lng, c.en);     // 用用户填的名字落库（地图标签用它）
-      return true;
-    }
-  } catch (e) { /* 网络失败 → 下面返回 false */ }
+    if (res.length) { const c = res[0]; rememberCity(clean, c.lat, c.lng, c.en); return true; }
+  } catch (e) { /* 离线/失败 → false */ }
   return false;
 }
-// 录入表单的地点自动补全：输入时拉 Photon 候选，填进共享 datalist；坐标缓存到 geoCache。
-function bindGeoAutocomplete() {
-  const inputs = [els.form?.elements?.origin, els.form?.elements?.destination].filter(Boolean);
-  if (!inputs.length || !els.cityList) return;
-  const localOpts = () => Object.keys(CITY).sort((a, b) => a.localeCompare(b, "zh-CN")).map(c => `<option value="${escapeHtml(c)}"></option>`).join("");
-  let timer = null, lastQ = "";
-  const onType = (e) => {
-    const q = String(e.target.value || "").trim();
+
+// 自建地点候选下拉：输入即查，每条带"省/州·国家"说明 + 国内/海外标；点选即锁定那一个的真实坐标。
+// 解决：①原生 datalist 难改难选 ②同名地点（多个"茅田"）选错 ③国内外混在一起难分。
+function setupGeoInput(input) {
+  const field = input.closest(".geo-field") || input.parentElement;
+  const box = document.createElement("ul");
+  box.className = "geo-suggest"; box.hidden = true;
+  field.appendChild(box);
+  let timer = null, lastQ = "", items = [], active = -1;
+  const close = () => { box.hidden = true; box.innerHTML = ""; active = -1; };
+  const choose = (c) => { if (!c) return; input.value = c.name; rememberCity(c.name, c.lat, c.lng, c.en); close(); };
+  const render = () => {
+    box.innerHTML = items.length ? items.map((c, i) =>
+      `<li data-i="${i}"${i === active ? ' class="active"' : ""}>` +
+      `<span class="gs-name">${escapeHtml(c.name)}</span>` +
+      (c.ctx ? `<span class="gs-ctx">${escapeHtml(c.ctx)}</span>` : "") +
+      `<span class="gs-tag ${c.domestic ? "cn" : "intl"}">${c.domestic ? "国内" : (escapeHtml(c.country) || "海外")}</span></li>`
+    ).join("") : `<li class="gs-empty">没找到「${escapeHtml(lastQ)}」——换个写法或更具体的名字（可加省份，如「恩施 茅田」）</li>`;
+    box.hidden = false;
+  };
+  const run = async (q) => { try { items = await photonSearch(q); } catch (e) { items = []; } active = -1; if (document.activeElement === input) render(); };
+  const onType = () => {
+    const q = input.value.trim();
     if (q === lastQ) return; lastQ = q;
     clearTimeout(timer);
-    if (q.length < 2 || CITY[stripShi(q)]) { els.cityList.innerHTML = localOpts(); return; }
-    timer = setTimeout(async () => {
-      try {
-        const res = await photonSearch(q);
-        res.forEach(c => geoCache.set(c.name, c));
-        els.cityList.innerHTML = localOpts() +
-          res.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.label)}</option>`).join("");
-      } catch (err) { /* 离线就只留本地候选 */ }
-    }, 320);
+    if (q.length < 2) { close(); return; }
+    timer = setTimeout(() => run(q), 300);
   };
-  inputs.forEach(inp => inp.addEventListener("input", onType));
+  input.addEventListener("input", onType);
+  input.addEventListener("focus", () => { const q = input.value.trim(); if (q.length >= 2) { lastQ = ""; onType(); } });   // 聚焦已填的也能重新挑，不必删光
+  input.addEventListener("keydown", (e) => {
+    if (box.hidden || !items.length) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); active = (active + 1) % items.length; render(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); active = (active - 1 + items.length) % items.length; render(); }
+    else if (e.key === "Enter" && active >= 0) { e.preventDefault(); choose(items[active]); }
+    else if (e.key === "Escape") { close(); }
+  });
+  box.addEventListener("mousedown", (e) => { const li = e.target.closest("li[data-i]"); if (li) { e.preventDefault(); choose(items[+li.dataset.i]); } });
+  input.addEventListener("blur", () => setTimeout(close, 150));
+}
+function bindGeoAutocomplete() {
+  [els.form && els.form.elements.origin, els.form && els.form.elements.destination].filter(Boolean).forEach(setupGeoInput);
 }
 
 // 真实铁路轨迹：data/build-real-paths.py 用 BRouter(只走 railway=rail) 预计算的 OSM 铁轨折线，

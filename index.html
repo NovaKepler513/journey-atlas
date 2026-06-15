@@ -197,10 +197,10 @@
                 <option value="cancelled">退改</option>
               </select>
             </label>
-            <label>出发地<input name="origin" list="cityList" required placeholder="北京 / 任意真实地点"></label>
-            <label>到达地<input name="destination" list="cityList" placeholder="上海 / 景德镇 / Kyoto…"></label>
+            <label class="geo-field">出发地<input name="origin" autocomplete="off" required placeholder="搜真实地点：北京 / 恩施 茅田 / Kyoto"></label>
+            <label class="geo-field">到达地<input name="destination" autocomplete="off" placeholder="同上；停留 / 门票可留空"></label>
             <label class="span-2">标题<input name="title" placeholder="不填则自动生成：北京 → 上海"></label>
-            <p class="form-hint span-2">地点可直接输入任意真实地名（国内乡镇、海外城市都行）——会联网检索并自动定位坐标；常用城市直接从下拉里选。</p>
+            <p class="form-hint span-2">输入任意真实地名 → 从下拉里<b>点选</b>正确的那一个（每条标了省/国家、国内/海外）。同名地点（多个「茅田」）就靠这个区分；想改已填的，点开输入框重选即可。</p>
           </fieldset>
 
           <fieldset class="form-block wide">
