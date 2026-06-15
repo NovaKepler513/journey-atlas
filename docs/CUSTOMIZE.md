@@ -21,35 +21,33 @@ You can also edit the masthead **at runtime**: `···` menu → “自定义标
 
 The static fallback in `index.html` (`<title>`, `.eyebrow`, `<h1>`) only shows for a split second before `app.js` applies `SITE_TITLE`; update it too if you care about the no-JS view.
 
-## 2. Add a city
+## 2. Places
 
-`app.js` → `CITY` map (decimal degrees):
+You usually don't need to do anything: the entry form **geocodes any place you type** (via OpenStreetMap / Photon) and remembers its coordinates in your browser — Chinese towns, overseas cities, anything real.
 
-```js
-const CITY = {
-  // …
-  "大理": { lat: 25.6065, lng: 100.2676 },
-};
-```
-
-For the poster's latin name and country/continent stats, also add:
+To **hardcode** a city (so it's always available, with a latin name for posters and country/continent for stats), add it to `app.js`:
 
 ```js
-const CITY_EN  = { /* … */ "大理": "DALI" };
+const CITY      = { /* … */ "大理": { lat: 25.6065, lng: 100.2676 } };
+const CITY_EN   = { /* … */ "大理": "DALI" };
 const CITY_META = { /* … */ "大理": { country: "中国", continent: "亚洲" } }; // omit if mainland China
 ```
 
-Cities not in `CITY` simply won't be plotted.
+## 3. Real rail tracks
 
-## 3. Real rail tracks (optional)
+Rail legs try hard to follow **real railway geometry**, not a straight line:
 
-By default rail legs are smooth arcs. To draw real geometry:
+1. **Bundled template** — China's tracks (and the demo's other routes) are precomputed into `data/rail-paths.json` and ship with the repo.
+2. **Live in-browser** — a rail leg with no bundled track is routed live against the public [BRouter](https://brouter.de/) server and the result is cached in your browser. So routes you add get real tracks automatically.
+3. **Fallback** — only genuinely un-routable legs (cross-ocean, or networks BRouter can't trace) draw a smooth great-circle arc.
+
+To bake more tracks into the repo itself (so every visitor gets them without a live call), run:
 
 ```bash
 python3 data/build-real-paths.py
 ```
 
-It reads your `travel-log.json`, finds `rail` legs, fetches tracks from the public BRouter service, simplifies them, and writes `data/rail-paths.json` + `data/rail-paths-data.js`. Legs it can't route fall back to arcs automatically. International high-speed rail often won't route — that's fine.
+It reads `travel-log.json`, finds `rail` legs, fetches + simplifies tracks via BRouter, and writes `data/rail-paths.json` + `data/rail-paths-data.js`.
 
 ## 4. Color skins
 

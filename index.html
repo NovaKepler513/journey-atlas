@@ -177,30 +177,11 @@
           </div>
           <span>先本机保存，可导出</span>
         </div>
-        <section class="ai-intake" aria-label="票据识别与AI导入">
-          <div class="intake-title">
-            <div>
-              <p class="panel-kicker">票据入口</p>
-              <h3>OCR / AI 识别</h3>
-            </div>
-            <span id="intakeStatus">等待票据</span>
-          </div>
-          <div class="intake-grid">
-            <label class="ticket-drop">票据文件
-              <input id="ticketFileInput" type="file" accept="image/*,.pdf" multiple>
-              <span id="ticketFileName">选择图片或 PDF</span>
-            </label>
-            <label class="intake-text">OCR文字或AI JSON
-              <textarea id="ocrText" placeholder="粘贴车票文字，或粘贴 AI 输出的 records JSON"></textarea>
-            </label>
-            <div class="intake-actions">
-              <button id="parseOcrBtn" type="button">试填表单</button>
-              <button id="importAiBtn" type="button">导入 AI JSON</button>
-              <button id="copyPromptBtn" type="button">复制识别提示</button>
-            </div>
-            <pre id="intakePreview" class="intake-preview" aria-live="polite">未识别</pre>
-          </div>
-        </section>
+        <aside class="ocr-disabled" aria-label="OCR 暂不可用">
+          <strong>票据 OCR 识别暂未开放</strong>
+          <p>从车票/截图自动读取行程需要一个识别服务（OCR / AI），纯前端静态站点暂时无法内置。后续若有合适的方案会补上。现在请用下面的表单手动录入；批量导入可用右上角 <b>···</b> 菜单的「导入 JSON / CSV」。</p>
+          <p class="ocr-disabled-en">Ticket OCR is disabled in this static build (it needs a recognition backend). Use the form below, or import JSON/CSV from the ··· menu.</p>
+        </aside>
         <form id="recordForm" class="form-grid">
           <fieldset class="form-block wide">
             <legend>路线</legend>
@@ -216,9 +197,10 @@
                 <option value="cancelled">退改</option>
               </select>
             </label>
-            <label>出发地<input name="origin" list="cityList" required placeholder="北京"></label>
-            <label>到达地<input name="destination" list="cityList" required placeholder="上海"></label>
+            <label>出发地<input name="origin" list="cityList" required placeholder="北京 / 任意真实地点"></label>
+            <label>到达地<input name="destination" list="cityList" placeholder="上海 / 景德镇 / Kyoto…"></label>
             <label class="span-2">标题<input name="title" placeholder="不填则自动生成：北京 → 上海"></label>
+            <p class="form-hint span-2">地点可直接输入任意真实地名（国内乡镇、海外城市都行）——会联网检索并自动定位坐标；常用城市直接从下拉里选。</p>
           </fieldset>
 
           <fieldset class="form-block wide">
@@ -258,8 +240,7 @@
       <div class="view-nav" aria-label="视图导航">
         <button type="button" data-nav="map" class="active">地图 · 时间线</button>
         <button type="button" data-nav="stats">旅行档案 · 明细</button>
-        <button type="button" data-nav="ocr">录入 / OCR</button>
-        <button type="button" id="showModeBtn" title="展示模式：隐去待补/置信度/录入等工作痕迹，适合给别人看">展示</button>
+        <button type="button" data-nav="ocr">录入</button>
       </div>
       <div class="deck-filters" aria-label="筛选">
         <label>年份<select id="yearFilter"></select></label>

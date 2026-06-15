@@ -861,15 +861,93 @@ function geoArc(a, b, n = 48) {
   return out;
 }
 
+/* ===== 地点地理编码：让任意真实地点都能录入（国内乡镇 + 海外）=====
+   用公开的 Photon（基于 OpenStreetMap）检索，无需 key、支持跨域。
+   解析到的坐标并入 CITY 并存到 localStorage，下次仍可用。 */
+const USER_CITY_KEY = "journeyatlas_user_cities";
+function loadUserCities() {
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(USER_CITY_KEY)) || {}; } catch (e) { /* 隐私模式 */ }
+  Object.entries(saved).forEach(([name, v]) => {
+    if (v && typeof v.lat === "number" && CITY[name] === undefined) CITY[name] = { lat: v.lat, lng: v.lng };
+    if (v && v.en && !CITY_EN[name]) CITY_EN[name] = v.en;
+  });
+}
+function rememberCity(name, lat, lng, en) {
+  if (!name) return;
+  CITY[name] = { lat, lng };
+  if (en) CITY_EN[name] = en;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(USER_CITY_KEY)) || {}; } catch (e) { /* 忽略 */ }
+  saved[name] = { lat, lng, en: en || "" };
+  try { localStorage.setItem(USER_CITY_KEY, JSON.stringify(saved)); } catch (e) { /* 忽略 */ }
+}
+const geoCache = new Map();   // 输入候选 name → {lat,lng,en}
+async function photonSearch(q) {
+  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=6`;
+  const r = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!r.ok) throw new Error("geocode http " + r.status);
+  const j = await r.json();
+  return (j.features || []).map(f => {
+    const [lng, lat] = f.geometry.coordinates;
+    const p = f.properties || {};
+    const name = p.name || p.city || p.county || q;
+    const ctx = [p.state, p.country].filter(Boolean).join(" · ");
+    const en = /^[\x00-\x7f]+$/.test(p.name || "") ? (p.name || "").toUpperCase() : "";
+    return { name, lat: +lat.toFixed(4), lng: +lng.toFixed(4), label: ctx ? `${name} · ${ctx}` : name, en };
+  });
+}
+// 把一个地名解析成坐标并并入 CITY；已知/缓存/在线查得到任一即成功。
+async function resolvePlace(name) {
+  const clean = stripShi(String(name || "").trim());
+  if (!clean) return false;
+  if (cityLngLat(clean)) return true;
+  if (geoCache.has(clean)) { const c = geoCache.get(clean); rememberCity(clean, c.lat, c.lng, c.en); return true; }
+  try {
+    const res = await photonSearch(clean);
+    if (res.length) {
+      const c = res[0];
+      rememberCity(clean, c.lat, c.lng, c.en);     // 用用户填的名字落库（地图标签用它）
+      return true;
+    }
+  } catch (e) { /* 网络失败 → 下面返回 false */ }
+  return false;
+}
+// 录入表单的地点自动补全：输入时拉 Photon 候选，填进共享 datalist；坐标缓存到 geoCache。
+function bindGeoAutocomplete() {
+  const inputs = [els.form?.elements?.origin, els.form?.elements?.destination].filter(Boolean);
+  if (!inputs.length || !els.cityList) return;
+  const localOpts = () => Object.keys(CITY).sort((a, b) => a.localeCompare(b, "zh-CN")).map(c => `<option value="${escapeHtml(c)}"></option>`).join("");
+  let timer = null, lastQ = "";
+  const onType = (e) => {
+    const q = String(e.target.value || "").trim();
+    if (q === lastQ) return; lastQ = q;
+    clearTimeout(timer);
+    if (q.length < 2 || CITY[stripShi(q)]) { els.cityList.innerHTML = localOpts(); return; }
+    timer = setTimeout(async () => {
+      try {
+        const res = await photonSearch(q);
+        res.forEach(c => geoCache.set(c.name, c));
+        els.cityList.innerHTML = localOpts() +
+          res.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.label)}</option>`).join("");
+      } catch (err) { /* 离线就只留本地候选 */ }
+    }, 320);
+  };
+  inputs.forEach(inp => inp.addEventListener("input", onType));
+}
+
 // 真实铁路轨迹：data/build-real-paths.py 用 BRouter(只走 railway=rail) 预计算的 OSM 铁轨折线，
 // 按无向城市对存储（键＝sorted(城市).join("→")）。运行时按行程方向取出、必要时反向，
 // 两端用城市中心点收尾，让轨迹贴到地图上的城市圆点。查不到的段返回 null → 回退大圆弧。
 const RAIL_PATHS = (typeof window !== "undefined" && window.RAIL_PATHS && window.RAIL_PATHS.legs) || {};
+// 运行时在线补轨缓存：用户新增的铁路段实时向 BRouter 取到的真实轨迹，存这里 + localStorage。
+let USER_RAIL = {};
+function loadUserRail() { try { USER_RAIL = JSON.parse(localStorage.getItem("journeyatlas_user_rail")) || {}; } catch (e) { USER_RAIL = {}; } }
 function railPolyline(origin, destination) {
   if (!origin || !destination) return null;
   const o = String(origin).replace(/市$/, ""), d = String(destination).replace(/市$/, "");
   const sorted = [o, d].sort();                 // 与 Python sorted 一致（CJK 均 BMP，码点序相同）
-  const leg = RAIL_PATHS[sorted.join("→")];
+  const leg = RAIL_PATHS[sorted.join("→")] || USER_RAIL[sorted.join("→")];   // 预算模板优先，其次在线补轨缓存
   if (!leg || !Array.isArray(leg.coords) || leg.coords.length < 2) return null;
   let coords = leg.coords.slice();
   if (sorted[0] !== o) coords.reverse();         // 存储是 first→second，行程反向则翻转
@@ -877,6 +955,55 @@ function railPolyline(origin, destination) {
   if (a) coords.unshift(a);                      // 起点城市圆点 → 最近车站的短接线
   if (b) coords.push(b);                          // 终点同理
   return coords;
+}
+
+/* ===== 运行时在线补轨：没有预算轨迹的铁路段，实时向 BRouter(公开, 允许跨域) 路由真实铁轨 =====
+   成功 → 缓存(内存+localStorage)并重绘；失败(跨洋/无连续轨道/离线)才回退弧线（绝不静默伪造）。
+   中国铁路在 data/rail-paths 里已离线内置；境内外新增线在这里实时补。 */
+const RAIL_PROFILE_TEXT = "---context:global\nassign downhillcost 0\nassign downhillcutoff 1.5\nassign uphillcost 0\nassign uphillcutoff 1.5\n---context:way\nassign turncost 0\nassign initialcost 0\nassign costfactor\n  switch railway=rail|light_rail|narrow_gauge 1\n  100000\n---context:node\nassign initialcost 0\n";
+let _railPid = null, _railPidPromise = null;
+const _railPending = new Set(), _railFailed = new Set();
+function railProfileId() {
+  if (_railPid) return Promise.resolve(_railPid);
+  if (!_railPidPromise) _railPidPromise = fetch("https://brouter.de/brouter/profile", { method: "POST", body: RAIL_PROFILE_TEXT })
+    .then(r => r.json()).then(j => (_railPid = j.profileid)).catch(() => { _railPidPromise = null; throw new Error("profile"); });
+  return _railPidPromise;
+}
+let _railRefreshTimer = null;
+function scheduleRouteRefresh() { clearTimeout(_railRefreshTimer); _railRefreshTimer = setTimeout(() => { if (typeof render === "function") render(); }, 700); }
+async function ensureRailTrack(origin, destination) {
+  const o = stripShi(String(origin || "")), d = stripShi(String(destination || ""));
+  if (!o || !d || o === d) return;
+  const key = [o, d].sort().join("→");
+  if (RAIL_PATHS[key] || USER_RAIL[key] || _railPending.has(key) || _railFailed.has(key)) return;
+  const a = cityLngLat(origin), b = cityLngLat(destination);
+  if (!a || !b) return;
+  _railPending.add(key);
+  try {
+    const pid = await railProfileId();
+    const url = `https://brouter.de/brouter?lonlats=${a[0]},${a[1]}|${b[0]},${b[1]}&profile=${pid}&alternativeidx=0&format=geojson`;
+    const r = await fetch(url);
+    const j = await r.json();
+    let coords = j && j.features && j.features[0] && j.features[0].geometry && j.features[0].geometry.coordinates;
+    if (coords && coords.length > 1) {
+      coords = coords.map(c => [+c[0].toFixed(5), +c[1].toFixed(5)]);
+      const sorted = [o, d].sort();
+      if (sorted[0] !== o) coords.reverse();        // 与 RAIL_PATHS 一致：按 sorted 的 first→second 存
+      USER_RAIL[key] = { coords };
+      try { localStorage.setItem("journeyatlas_user_rail", JSON.stringify(USER_RAIL)); } catch (e) { /* 忽略 */ }
+      scheduleRouteRefresh();
+    } else { _railFailed.add(key); }
+  } catch (e) { _railFailed.add(key); }            // 跨洋/无轨/离线 → 保留弧线
+  finally { _railPending.delete(key); }
+}
+// 一段路径：铁路优先真实轨迹（预算或在线补轨），查不到先回退弧线、并后台补轨；其余方式走弧线。
+function segPath(kind, origin, destination, llA, llB) {
+  if (kind === "rail") {
+    const t = railPolyline(origin, destination);
+    if (t) return t;
+    ensureRailTrack(origin, destination);
+  }
+  return geoArc(llA, llB);
 }
 
 const ROUTE_WIDTH = 1.6;     // 选中与未选中统一粗细——细一点更干净
@@ -1272,7 +1399,7 @@ function renderMap(list) {
     const sel = focusCity
       ? ((stripShi(g.origin) === focusCity || stripShi(g.destination) === focusCity) ? 1 : 0)
       : (g.trips.some(t => t.id === selectedId) ? 1 : 0);
-    const coordinates = (g.kind === "rail" && railPolyline(g.origin, g.destination)) || geoArc(g.a, g.b);
+    const coordinates = segPath(g.kind, g.origin, g.destination, g.a, g.b);
     features.push({ type: "Feature", properties: { key: g.key, kind: g.kind, sel, count: g.trips.length }, geometry: { type: "LineString", coordinates } });
   });
   features.sort((x, y) => (KIND_Z[x.properties.kind] ?? 0) - (KIND_Z[y.properties.kind] ?? 0));
@@ -1577,7 +1704,7 @@ function renderTravelPoster(canvas, opts) {
       const a = cityLngLat(r.origin), c = cityLngLat(r.destination); if (!a || !c) return;
       const key = r.kind + "|" + [stripShi(r.origin), stripShi(r.destination)].sort().join("~");
       if (seenR.has(key)) return; seenR.add(key);
-      const coords = (r.kind === "rail" && railPolyline(r.origin, r.destination)) || geoArc(a, c);
+      const coords = segPath(r.kind, r.origin, r.destination, a, c);
       if (!coords || coords.length < 2) return;
       ctx.beginPath(); coords.forEach((pt, i) => { const [x, y] = project(pt[0], pt[1]); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
       ctx.strokeStyle = RC[r.kind] || RC.other; ctx.lineWidth = 2.2; ctx.globalAlpha = 0.5; ctx.setLineDash([7, 4]); ctx.stroke();
@@ -2634,7 +2761,7 @@ function buildPlaySegments(list) {
       const a = cityLngLat(r.origin), b = cityLngLat(r.destination); if (!a || !b) return;
       segs.push({ key: r.id, kind: r.kind, from: r.origin, to: r.destination, fromLL: a, toLL: b, repId: r.id });
     });
-  segs.forEach(s => { s.coords = (s.kind === "rail" && railPolyline(s.from, s.to)) || geoArc(s.fromLL, s.toLL); });
+  segs.forEach(s => { s.coords = segPath(s.kind, s.from, s.to, s.fromLL, s.toLL); });
   return segs;
 }
 
@@ -3543,8 +3670,6 @@ function bindEvents() {
   els.playBtn.addEventListener("click", togglePlayback);
   const eraBtnEl = document.getElementById("eraBtn");
   if (eraBtnEl) eraBtnEl.addEventListener("click", playEras);
-  const showModeBtnEl = document.getElementById("showModeBtn");
-  if (showModeBtnEl) showModeBtnEl.addEventListener("click", toggleShowMode);
 
   const titleVisChkEl = document.getElementById("titleVisChk");
   if (titleVisChkEl) titleVisChkEl.addEventListener("change", () => setTitleHidden(!titleVisChkEl.checked));
@@ -3599,10 +3724,7 @@ function bindEvents() {
     if (!window.confirm("重载会丢弃本机新增、尚未导出的记录，恢复为文件版本。确定重载？")) return;
     stopPlayback();
     localStorage.removeItem(STORAGE_KEY);
-    els.ocrText.value = "";
-    els.ticketFileInput.value = "";
-    els.ticketFileName.textContent = "选择图片或 PDF";
-    setIntakeStatus("等待票据", "未识别");
+    if (els.ocrText) els.ocrText.value = "";
     await loadData({ preferLocal: false });
     setupFilters();
     selectedId = records.find(record => record.showInTimeline !== false)?.id || records[0]?.id || "";
@@ -3616,7 +3738,7 @@ function bindEvents() {
     stopPlayback();
     records = [];
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify([], null, 2)); } catch (e) { /* 隐私模式 */ }
-    els.ocrText.value = "";
+    if (els.ocrText) els.ocrText.value = "";
     selectedId = "";
     setupFilters();
     els.status.textContent = "空白地图，0 条行程";
@@ -3650,62 +3772,79 @@ function bindEvents() {
     }
   });
 
-  els.ticketFileInput.addEventListener("change", event => {
-    const files = Array.from(event.target.files || []);
-    if (!files.length) {
-      els.ticketFileName.textContent = "选择图片或 PDF";
-      setIntakeStatus("等待票据", "未识别");
-      return;
-    }
-    els.ticketFileName.textContent = files.map(file => file.name).join(" / ");
-    setIntakeStatus(`已选择 ${files.length} 个文件`, "把票据交给任意 AI 识别后，粘贴标准 JSON；或粘贴系统 OCR 文本后试填。");
-  });
+  // OCR / 票据识别在静态站点暂未开放——相关 DOM 已移除，这些绑定整体跳过。
+  if (els.ticketFileInput) {
+    els.ticketFileInput.addEventListener("change", event => {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) {
+        els.ticketFileName.textContent = "选择图片或 PDF";
+        setIntakeStatus("等待票据", "未识别");
+        return;
+      }
+      els.ticketFileName.textContent = files.map(file => file.name).join(" / ");
+      setIntakeStatus(`已选择 ${files.length} 个文件`, "把票据交给任意 AI 识别后，粘贴标准 JSON；或粘贴系统 OCR 文本后试填。");
+    });
+    els.parseOcrBtn.addEventListener("click", () => {
+      try {
+        const structured = tryParseStructuredRecords(els.ocrText.value);
+        const record = structured[0] || parseTicketText(els.ocrText.value);
+        fillFormFromRecord(record);
+        setIntakeStatus("已试填，等待校对", record);
+        els.form.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        setIntakeStatus("识别失败", error.message || "请补充票据文字");
+      }
+    });
+    els.importAiBtn.addEventListener("click", () => {
+      try {
+        const imported = parseStructuredRecords(els.ocrText.value);
+        if (!imported.length) throw new Error("没有找到 records JSON");
+        importRecordsToLocal(imported, `已从 AI JSON 导入 ${imported.length} 条行程`);
+        setIntakeStatus("已导入地图", imported);
+      } catch (error) {
+        setIntakeStatus("导入失败", error.message || "请粘贴标准 JSON");
+      }
+    });
+    els.copyPromptBtn.addEventListener("click", async () => {
+      await copyText(AI_RECORD_PROMPT);
+      setIntakeStatus("识别提示已复制", "把票据图片或 PDF 发给任意 AI，再让它按提示输出 JSON。");
+    });
+  }
 
-  els.parseOcrBtn.addEventListener("click", () => {
-    try {
-      const structured = tryParseStructuredRecords(els.ocrText.value);
-      const record = structured[0] || parseTicketText(els.ocrText.value);
-      fillFormFromRecord(record);
-      setIntakeStatus("已试填，等待校对", record);
-      els.form.scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch (error) {
-      setIntakeStatus("识别失败", error.message || "请补充票据文字");
-    }
-  });
-
-  els.importAiBtn.addEventListener("click", () => {
-    try {
-      const imported = parseStructuredRecords(els.ocrText.value);
-      if (!imported.length) throw new Error("没有找到 records JSON");
-      importRecordsToLocal(imported, `已从 AI JSON 导入 ${imported.length} 条行程`);
-      setIntakeStatus("已导入地图", imported);
-    } catch (error) {
-      setIntakeStatus("导入失败", error.message || "请粘贴标准 JSON");
-    }
-  });
-
-  els.copyPromptBtn.addEventListener("click", async () => {
-    await copyText(AI_RECORD_PROMPT);
-    setIntakeStatus("识别提示已复制", "把票据图片或 PDF 发给任意 AI，再让它按提示输出 JSON。");
-  });
-
-  els.form.addEventListener("submit", event => {
+  els.form.addEventListener("submit", async event => {
     event.preventDefault();
     const form = new FormData(els.form);
     const item = Object.fromEntries(form.entries());
     item.id = `${item.startDate}-${item.kind}-${Date.now()}`;
     item.endDate = item.endDate || item.startDate;
+    if ((item.kind === "stay" || item.kind === "other") && !item.destination) item.destination = item.origin;
     item.title = item.title || [item.origin, item.destination].filter(Boolean).join(" → ");
     item.amountCny = parseOptionalNumber(item.amountCny);
     item.durationMinutes = parseOptionalNumber(item.durationMinutes);
     item.people = item.traveler ? [item.traveler] : [];
     item.countsAsAway = item.kind !== "cancelled";
     item.countsAsVisited = item.kind !== "cancelled";
+
+    // 把出发地/到达地解析成真实坐标（已知城市直接用；新地点用 Photon 在线检索并落库）。
+    const submitBtn = els.form.querySelector('button[type="submit"], button:not([type])');
+    const prevLabel = submitBtn ? submitBtn.textContent : "";
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "定位地点…"; }
+    const okO = await resolvePlace(item.origin);
+    const needD = item.destination && stripShi(item.destination) !== stripShi(item.origin);
+    const okD = needD ? await resolvePlace(item.destination) : okO;
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = prevLabel; }
+    if (!okO || !okD) {
+      const bad = !okO ? item.origin : item.destination;
+      flashToast(`没找到地点「${escapeHtml(bad)}」——换个写法或更具体的名字再试（需联网检索）`, 3000);
+      return;
+    }
+
     records = normalize([...records, item]);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records, null, 2));
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(records, null, 2)); } catch (e) { /* 隐私模式 */ }
     setupFilters();
     selectedId = item.id;
     els.status.textContent = "新路线已加入本机地图";
+    flashToast(`已加入：${escapeHtml(item.title)} ✓`, 1900);
     els.form.reset();
     els.form.elements.traveler.value = OWNER_NAME;
     render();
@@ -3725,6 +3864,8 @@ async function init() {
   bootStartTs = Date.now();
   const bootName = document.getElementById("bootName");
   if (bootName) bootName.textContent = APP_NAME;   // 开屏项目名以 APP_NAME 为准
+  loadUserCities();   // 并入此前在线检索过、已落库的自定义地点坐标
+  loadUserRail();     // 并入此前在线补到的铁路真实轨迹缓存
   try {
     await loadData();
   } catch (error) {
@@ -3735,6 +3876,7 @@ async function init() {
   setupFilters();
   bindEvents();
   bindPosterModal();
+  bindGeoAutocomplete();   // 录入表单地点输入：任意真实地点在线检索补全
   applySiteTitle();  // 写入自定义标题（SITE_TITLE 配置）
   applyShowMode();   // 恢复上次的「展示/工作台」模式（localStorage 记忆）
   applyTitleVis();   // 恢复上次的「标题报头」显隐（localStorage 记忆）

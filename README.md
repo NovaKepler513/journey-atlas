@@ -50,10 +50,15 @@ Or drop the folder on any static host (GitHub Pages, Netlify, Vercel, Cloudflare
    const HOME_CITY  = "上海";           // your home city (for the "nights at home" estimate)
    ```
    (You can also rename the masthead live from the `···` → “自定义标题” menu — it saves to your browser.)
-3. **New cities** → add coordinates to the `CITY` map in `app.js` (plus `CITY_EN` / `CITY_META` for the poster latin name & country).
-4. **Real rail tracks** (optional) → run `python3 data/build-real-paths.py` to fetch train geometry; otherwise rail legs draw as smooth arcs.
+3. **Any place, just type it** → the entry form geocodes unknown places live via OpenStreetMap (Photon) and remembers their coordinates — Chinese towns, overseas cities, anything real. (You can still hardcode coordinates in the `CITY` map in `app.js` if you prefer.)
+4. **Real rail tracks** → China's rail geometry is **bundled** (precomputed from public OpenStreetMap data via BRouter). Rail legs you add are routed **live against BRouter** for a real track and cached in your browser; genuinely un-routable legs (cross-ocean, or networks BRouter can't trace) fall back to a smooth great-circle arc. To bake more tracks into the repo itself, run `python3 data/build-real-paths.py`.
 
 Full guide: [`docs/CUSTOMIZE.md`](docs/CUSTOMIZE.md).
+
+## Notes · 说明
+
+- **Ticket OCR is currently disabled.** Reading trips automatically from ticket photos/screenshots needs a recognition backend (OCR/AI), which a pure static site can't bundle. The entry form is manual for now; we may add OCR later if there's demand — open an issue. · **票据 OCR 暂时关闭**：从车票截图自动识别行程需要一个识别后端，纯静态站点无法内置，目前请手动录入；后续若有需要可能补上，欢迎提 issue。
+- **Rail tracks:** China is covered by a built-in template + live routing; some overseas networks and any cross-ocean "rail" leg can't be traced and show a smooth arc instead. · **铁路轨迹**：中国已内置模板并支持在线补轨；部分境外线网与跨洋"铁路"段无法描出真实轨道，会以平滑弧线表示。
 
 ## Privacy · 隐私
 
@@ -63,20 +68,29 @@ Everything runs client-side. There is no server, no analytics, no account. Your 
 
 ## Tech · 技术栈
 
-Vanilla JS + [MapLibre GL JS](https://maplibre.org/) + Canvas. No framework, no build. Base map by [OpenFreeMap](https://openfreemap.org/) / [OpenMapTiles](https://openmaptiles.org/) / [OpenStreetMap](https://www.openstreetmap.org/copyright). China boundaries & world topology from public GeoJSON/TopoJSON datasets (see `data/`). Rail geometry via the public [BRouter](https://brouter.de/) routing service.
+Vanilla JS + Canvas + [MapLibre GL JS](https://maplibre.org/). No framework, no build step, no backend.
 
 ## Dev tools · 开发脚本 (`data/`)
 
 - `audit.py` — pre-commit self-check on your records (date order, schema, suspicious states).
-- `build-real-paths.py` — precompute real rail tracks for your train legs.
+- `build-real-paths.py` — precompute real rail tracks for your train legs (via BRouter).
 - `merge-records.py` — dedupe & merge new records into the log.
 
-## Credits · 致谢
+## Credits & acknowledgements · 致谢
 
-The **street poster** button (`街道海报 ↗`) doesn't render in-app — it hands you over to the lovely open-source project **[maptoposter](https://maptoposter.0v0.one/)**. I linked it out because the street-grid posters it makes are genuinely beautiful, and there was no point reinventing that. **Go play with it** — drop in any city and it generates a gorgeous printable street poster. Huge thanks to its author. 🙏
+This project stands on a lot of generous open-source work and open data. Heartfelt thanks to all of them — please go visit and use them too.
+本项目站在许多慷慨的开源项目与开放数据之上，在此一并致谢，也欢迎大家去使用它们：
 
-应用里的「街道海报 ↗」按钮不在本项目内渲染，而是把你交接给另一个很棒的开源项目 **[maptoposter](https://maptoposter.0v0.one/)**。之所以做成跳转，是因为它生成的街道路网海报真的很漂亮，没必要再造一遍轮子。**强烈推荐大家去逛逛**：随便填一个城市，它就能生成一张精美、可打印的街道海报。在此特别感谢作者。🙏
+- **[maptoposter](https://maptoposter.0v0.one/)** — the **「街道海报 ↗」** button hands off to this lovely project; its street-grid posters are genuinely beautiful, so rather than reinvent it I link straight to it. Go make a poster there! · 「街道海报」按钮直接跳转到它——它生成的街道路网海报太好看了，与其重造不如把你交接过去，强烈推荐。
+- **[MapLibre GL JS](https://maplibre.org/)** (BSD-3) — the interactive vector map engine. · 交互矢量地图引擎。
+- **[OpenFreeMap](https://openfreemap.org/)** + **[OpenMapTiles](https://openmaptiles.org/)** — free vector base-map tiles & styles. · 免费矢量底图瓦片与样式。
+- **[OpenStreetMap](https://www.openstreetmap.org/copyright)** (© OSM contributors, ODbL) — the open geodata under the base map, the geocoder, and the rail routing. · 底图、地理编码与铁路路由背后的开放地理数据。
+- **[BRouter](https://brouter.de/)** — open routing engine; we use its public server (with a rail-only profile) to trace real railway geometry, both offline and live in-browser. · 开源路由引擎；用其公共服务器（rail-only profile）描出真实铁轨，离线预算与浏览器在线补轨都靠它。
+- **[Photon](https://photon.komoot.io/) by Komoot** — open geocoder (on OSM data) that powers the "type any place" search. · 基于 OSM 的开源地理编码，支撑「任意地点检索」。
+- **[DataV.GeoAtlas](https://datav.aliyun.com/portal/school/atlas/area_selector)** (Aliyun) — public China province GeoJSON (`data/china-100000-full.json`). · 中国省级行政区 GeoJSON。
+- **[world-atlas](https://github.com/topojson/world-atlas)** / **[Natural Earth](https://www.naturalearthdata.com/)** (public domain) — world country topology (`data/world-110m.json`). · 世界国家边界拓扑。
+- **[jsDelivr](https://www.jsdelivr.com/)** — CDN serving the MapLibre library. · 提供 MapLibre 的 CDN。
 
 ## License
 
-[MIT](LICENSE) © Nova Kepler. Demo data is fictional. Base-map and geo datasets retain their respective licenses. The linked [maptoposter](https://maptoposter.0v0.one/) project is independent and retains its own.
+[MIT](LICENSE) © Nova Kepler. Demo data and the two demo travelers are fictional. Bundled map tiles, geo datasets, and the linked projects above retain their own respective licenses.
