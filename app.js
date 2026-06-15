@@ -894,27 +894,36 @@ const CC_CONTINENT = {
 };
 function continentOf(cc) { const k = CC_CONTINENT[String(cc || "").toUpperCase()] || "other"; return { key: k, zh: CONTINENT_ZH[k] }; }
 
-// Photon 检索 → 候选数组。lang=default 取 OSM 本地名（中国地点显中文、日本显日文…，不受浏览器语言影响）；
-// 每条带"省·市/县（中国）"或"地区·国家（海外）"上下文 + 中国/大洲标记 + 真实坐标。
+// 一葳能读拉丁 + 中文/日文汉字假名；阿拉伯/希伯来/西里尔/泰/希腊/亚美尼亚/谚文/印度系等 → 看不懂，换英文。
+const NON_READABLE = /[֐-׿؀-ۿݐ-ݿЀ-ԯ฀-๿Ͱ-Ͽ԰-֏가-힯ᄀ-ᇿ㄰-㆏ऀ-෿]/;
+function preferReadable(local, en) { local = local || ""; return (local && !NON_READABLE.test(local)) ? local : (en || local); }
+
+// Photon 检索 → 候选数组。同时取 default(本地名) 与 en(英文名)：本地名可读(中文/日文/拉丁)就用本地名，
+// 不可读(阿拉伯/西里尔/泰…)就退英文。每条带"省·市/县(中国)"或"地区·国家(海外)" + 中国/大洲标记 + 真实坐标。
 async function photonSearch(q) {
-  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=default`;
-  const r = await fetch(url, { headers: { Accept: "application/json" } });
-  if (!r.ok) throw new Error("geocode http " + r.status);
-  const j = await r.json();
+  const base = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8`;
+  const grab = (lang) => fetch(`${base}&lang=${lang}`, { headers: { Accept: "application/json" } })
+    .then(r => r.ok ? r.json() : { features: [] }).catch(() => ({ features: [] }));
+  const [jd, je] = await Promise.all([grab("default"), grab("en")]);
+  const enById = new Map();
+  (je.features || []).forEach(f => { const p = f.properties || {}; if (p.osm_id != null) enById.set(`${p.osm_type}/${p.osm_id}`, p); });
   const out = [], seen = new Set();
-  (j.features || []).forEach(f => {
+  (jd.features || []).forEach(f => {
     if (!f.geometry || f.geometry.type !== "Point") return;
     const [lng, lat] = f.geometry.coordinates;
-    const p = f.properties || {};
-    const name = p.name || p.city || p.county || p.district || q;
-    const cc = String(p.countrycode || "").toUpperCase();
-    const domestic = ["CN", "HK", "MO", "TW"].includes(cc) || p.country === "中国" || p.country === "China";
-    const parts = domestic ? [p.state, p.county || p.city || p.district] : [p.state || p.city, p.country];
-    const ctx = [...new Set(parts.filter(x => x && x !== name))].join(" · ");
-    const en = /^[\x00-\x7f]+$/.test(p.name || "") ? (p.name || "").toUpperCase() : "";
-    const key = `${name}|${(+lat).toFixed(2)}|${(+lng).toFixed(2)}`;
+    const d = f.properties || {};
+    const e = (d.osm_id != null && enById.get(`${d.osm_type}/${d.osm_id}`)) || {};
+    const cc = String(d.countrycode || e.countrycode || "").toUpperCase();
+    const domestic = ["CN", "HK", "MO", "TW"].includes(cc) || d.country === "中国" || d.country === "China";
+    const name = preferReadable(d.name || d.city || d.county || d.district, e.name || e.city || e.county) || q;
+    const region = preferReadable(d.state || d.city, e.state || e.city);
+    const country = preferReadable(d.country, e.country);
+    const parts = domestic ? [region, preferReadable(d.county || d.city || d.district, e.county || e.city)] : [region, country];
+    const ctx = [...new Set(parts.filter(x => x && x !== name && !NON_READABLE.test(x)))].join(" · ");   // 残留看不懂的(没匹配到英文)宁可不显示
+    const en = /^[\x00-\x7f]+$/.test(e.name || "") ? (e.name || "").toUpperCase() : "";
+    const key = `${(+lat).toFixed(3)},${(+lng).toFixed(3)}`;
     if (seen.has(key)) return; seen.add(key);
-    out.push({ name, lat: +(+lat).toFixed(4), lng: +(+lng).toFixed(4), domestic, ctx, country: p.country || "", cont: continentOf(cc), en });
+    out.push({ name, lat: +(+lat).toFixed(4), lng: +(+lng).toFixed(4), domestic, ctx, country, cont: continentOf(cc), en });
   });
   return out;
 }
