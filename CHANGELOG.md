@@ -2,6 +2,15 @@
 
 All notable changes to Roamap. Dates are when the change landed in the public repo.
 
+## v1.1 · 2025-12
+
+Geocoding & data-entry overhaul.
+
+- **Add any real place** with a proper labeled autocomplete (replaces the old `<datalist>`): each candidate shows `省·市` (China) or `region · country` (overseas) plus a **中国 / continent-colored** tag — pick the exact one (e.g. the 湖北·恩施 茅田, not Guangzhou's). Picking locks that place's real coordinates.
+- **Admin-first ranking** — cities / counties / towns rank above landmarks, streets, stations (search a POI by its own name instead).
+- **Readable names** — a place's local name is shown when it's Latin or Chinese/Japanese; otherwise it falls back to English (so قطر shows as "Qatar", Москва as "Moscow"), while 五台县 stays Chinese and 東京都 stays Japanese. This build is Chinese-user-first (see [ROADMAP](docs/ROADMAP.md)).
+- Re-focus a filled place field to re-pick without deleting; keyboard nav in the dropdown.
+
 ## v1.0 · 2025-12
 
 First public release.
